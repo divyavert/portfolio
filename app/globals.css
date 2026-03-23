@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Warm Dark Theme (Default) */
+    --background: 10 10 10; /* #0a0a0a */
+    --foreground: 0 0 100; /* #ffffff */
+    
+    --card: 0 0 100; /* #ffffff */
+    --card-foreground: 10 10 10; /* #1a1a1a */
+    
+    --primary: 16 71 59; /* #e67e4d */
+    --primary-foreground: 0 0 100; /* #ffffff */
+    
+    --secondary: 75 100 63; /* #d4ff4f */
+    --secondary-foreground: 10 10 10; /* #1a1a1a */
+    
+    --accent-purple: 258 90 77; /* #a78bfa */
+    --accent-blue: 213 94 68; /* #60a5fa */
+    --accent-pink: 330 81 68; /* #f472b6 */
+    --accent-green: 156 73 74; /* #34d399 */
+    --accent-yellow: 43 96 56; /* #fbbf24 */
+    
+    --muted: 0 0 63; /* #a0a0a0 */
+    --muted-foreground: 0 0 40; /* #666666 */
+    
+    --border: 0 0 16; /* #2a2a2a */
+    
+    --destructive: 0 84 60; /* #ef4444 */
+    --success: 142 76 45; /* #22c55e */
+    --warning: 32 95 50; /* #f59e0b */
+  }
+  
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-body;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
+
+/* Smooth transitions for theme changes */
+* {
+  transition-property: background-color, border-color, color;
+  transition-duration: 200ms;
+  transition-timing-function: ease-in-out;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Remove transitions on page load */
+.preload * {
+  transition: none !important;
+}
