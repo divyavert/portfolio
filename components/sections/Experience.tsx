@@ -3,87 +3,44 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import type { Experience } from '@/lib/sanity/types';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Placeholder data - will be replaced with Sanity CMS
-const experiences = [
+interface ExperienceProps {
+  experiences: Experience[];
+}
+
+// Fallback data
+const fallbackExperiences: Experience[] = [
   {
-    id: 1,
-    company: 'Tech Innovations Inc.',
-    position: 'Senior Software Engineer',
-    location: 'San Francisco, CA',
-    startDate: '2024-01',
-    endDate: null,
-    current: true,
-    description: 'Leading frontend development initiatives and mentoring junior developers.',
-    responsibilities: [
-      'Architected and implemented scalable React applications',
-      'Led team of 4 developers in agile sprints',
-      'Improved application performance by 40%',
-      'Mentored 3 junior developers',
-    ],
-    technologies: ['React', 'Next.js', 'TypeScript', 'Node.js', 'PostgreSQL'],
-    achievements: [
-      'Reduced page load time by 60%',
-      'Successfully launched 3 major features',
-    ],
-  },
-  {
-    id: 2,
-    company: 'Digital Solutions Co.',
+    _id: '1',
+    company: 'Tech Company',
     position: 'Software Engineer',
     location: 'Remote',
-    startDate: '2022-06',
-    endDate: '2023-12',
-    current: false,
-    description: 'Full-stack development of web applications and REST APIs.',
-    responsibilities: [
-      'Developed and maintained full-stack applications',
-      'Collaborated with design team on UI/UX improvements',
-      'Implemented RESTful APIs and database schemas',
-      'Participated in code reviews and sprint planning',
-    ],
-    technologies: ['React', 'Node.js', 'Express', 'MongoDB', 'AWS'],
-    achievements: [
-      'Built 5+ production-ready features',
-      'Reduced API response time by 35%',
-    ],
-  },
-  {
-    id: 3,
-    company: 'StartUp Ventures',
-    position: 'Junior Developer',
-    location: 'New York, NY',
-    startDate: '2021-08',
-    endDate: '2022-05',
-    current: false,
-    description: 'Contributed to frontend development and learned best practices.',
-    responsibilities: [
-      'Developed responsive web interfaces',
-      'Fixed bugs and implemented new features',
-      'Wrote unit tests for components',
-      'Collaborated with senior developers',
-    ],
-    technologies: ['JavaScript', 'React', 'CSS', 'Git'],
-    achievements: [
-      'Completed first full-stack project',
-      'Learned fundamentals of modern web development',
-    ],
+    startDate: '2024-01-01',
+    endDate: undefined,
+    current: true,
+    description: 'Building modern web applications',
+    responsibilities: ['Developed React applications', 'Led team initiatives'],
+    technologies: ['React', 'Next.js', 'TypeScript'],
+    achievements: ['Improved performance by 40%'],
   },
 ];
 
-function formatDate(dateString: string | null, current: boolean) {
-  if (current) return 'Present';
-  if (!dateString) return '';
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
-}
+export default function Experience({ experiences: sanityExperiences }: ExperienceProps) {
+  const experienceList = sanityExperiences && sanityExperiences.length > 0 ? sanityExperiences : fallbackExperiences;
 
-export default function Experience() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
+
+  const formatDate = (dateString: string | undefined, current: boolean) => {
+    if (current) return 'Present';
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -187,12 +144,12 @@ export default function Experience() {
 
           {/* Experience Cards */}
           <div className="relative space-y-16 md:space-y-24">
-            {experiences.map((exp, index) => {
+            {experienceList.map((exp: Experience, index: number) => {
               const isLeft = index % 2 === 0;
               
               return (
                 <div
-                  key={exp.id}
+                  key={exp._id}
                   className={`experience-card relative flex flex-col md:flex-row gap-8 items-center ${
                     isLeft ? 'md:flex-row' : 'md:flex-row-reverse'
                   }`}
@@ -287,7 +244,7 @@ export default function Experience() {
                       </div>
 
                       {/* Achievements */}
-                      {exp.achievements.length > 0 && (
+                      {exp.achievements && exp.achievements.length > 0 && (
                         <div className="pt-4 border-t border-primary/10">
                           <h4 className="text-sm font-heading font-bold mb-2 text-accent-green flex items-center gap-2">
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -296,7 +253,7 @@ export default function Experience() {
                             Achievements
                           </h4>
                           <ul className="space-y-1 text-sm text-muted-foreground">
-                            {exp.achievements.map((achievement, idx) => (
+                            {exp.achievements?.map((achievement: string, idx: number) => (
                               <li key={idx} className="flex items-start gap-2">
                                 <span className="text-accent-green mt-1">✓</span>
                                 <span>{achievement}</span>

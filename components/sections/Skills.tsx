@@ -3,31 +3,23 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import type { Skill } from '@/lib/sanity/types';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Placeholder data - will be replaced with Sanity CMS
-const skills = [
-  { name: 'React', category: 'frontend', proficiency: 90, color: 'from-accent-blue/30 to-accent-blue/10' },
-  { name: 'Next.js', category: 'frontend', proficiency: 85, color: 'from-foreground/30 to-foreground/10' },
-  { name: 'TypeScript', category: 'frontend', proficiency: 88, color: 'from-accent-blue/30 to-accent-blue/10' },
-  { name: 'JavaScript', category: 'frontend', proficiency: 92, color: 'from-accent-yellow/30 to-accent-yellow/10' },
-  { name: 'Tailwind CSS', category: 'frontend', proficiency: 90, color: 'from-accent-blue/30 to-accent-blue/10' },
-  { name: 'HTML/CSS', category: 'frontend', proficiency: 95, color: 'from-primary/30 to-primary/10' },
-  { name: 'Node.js', category: 'backend', proficiency: 80, color: 'from-accent-green/30 to-accent-green/10' },
-  { name: 'Python', category: 'backend', proficiency: 75, color: 'from-accent-blue/30 to-accent-blue/10' },
-  { name: 'REST APIs', category: 'backend', proficiency: 85, color: 'from-accent-purple/30 to-accent-purple/10' },
-  { name: 'PostgreSQL', category: 'backend', proficiency: 70, color: 'from-accent-blue/30 to-accent-blue/10' },
-  { name: 'MongoDB', category: 'backend', proficiency: 75, color: 'from-accent-green/30 to-accent-green/10' },
-  { name: 'Git', category: 'tools', proficiency: 88, color: 'from-primary/30 to-primary/10' },
-  { name: 'Docker', category: 'devops', proficiency: 65, color: 'from-accent-blue/30 to-accent-blue/10' },
-  { name: 'CI/CD', category: 'devops', proficiency: 70, color: 'from-accent-purple/30 to-accent-purple/10' },
-  { name: 'GSAP', category: 'frontend', proficiency: 80, color: 'from-accent-green/30 to-accent-green/10' },
-  { name: 'Framer Motion', category: 'frontend', proficiency: 75, color: 'from-accent-pink/30 to-accent-pink/10' },
-  { name: 'Redux', category: 'frontend', proficiency: 78, color: 'from-accent-purple/30 to-accent-purple/10' },
-  { name: 'GraphQL', category: 'backend', proficiency: 72, color: 'from-accent-pink/30 to-accent-pink/10' },
-  { name: 'Figma', category: 'tools', proficiency: 85, color: 'from-accent-pink/30 to-accent-pink/10' },
-  { name: 'VS Code', category: 'tools', proficiency: 92, color: 'from-accent-blue/30 to-accent-blue/10' },
+interface SkillsProps {
+  skills: Skill[];
+}
+
+// Fallback data
+const fallbackSkills: Skill[] = [
+  { _id: '1', name: 'React', category: 'frontend', proficiency: 90, order: 1 },
+  { _id: '2', name: 'Next.js', category: 'frontend', proficiency: 85, order: 2 },
+  { _id: '3', name: 'TypeScript', category: 'frontend', proficiency: 88, order: 3 },
+  { _id: '4', name: 'Node.js', category: 'backend', proficiency: 80, order: 4 },
+  { _id: '5', name: 'Python', category: 'backend', proficiency: 75, order: 5 },
+  { _id: '6', name: 'Git', category: 'tools', proficiency: 88, order: 6 },
+  { _id: '7', name: 'Docker', category: 'devops', proficiency: 65, order: 7 },
 ];
 
 const categories = {
@@ -35,9 +27,20 @@ const categories = {
   backend: { name: 'Backend', color: 'text-accent-green' },
   devops: { name: 'DevOps', color: 'text-accent-purple' },
   tools: { name: 'Tools', color: 'text-primary' },
+  other: { name: 'Other', color: 'text-muted-foreground' },
 };
 
-export default function Skills() {
+// Color gradient mappings for skill badges
+const colorGradients: Record<string, string> = {
+  frontend: 'from-accent-blue/30 to-accent-blue/10',
+  backend: 'from-accent-green/30 to-accent-green/10',
+  devops: 'from-accent-purple/30 to-accent-purple/10',
+  tools: 'from-primary/30 to-primary/10',
+  other: 'from-muted/30 to-muted/10',
+};
+
+export default function Skills({ skills: sanitySkills }: SkillsProps) {
+  const skillList = sanitySkills && sanitySkills.length > 0 ? sanitySkills : fallbackSkills;
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const cloudRef = useRef<HTMLDivElement>(null);
@@ -141,16 +144,18 @@ export default function Skills() {
 
           {/* Skills Badges - Arranged in a cloud pattern */}
           <div className="relative flex flex-wrap justify-center items-center gap-3 p-8">
-            {skills.map((skill, index) => {
+            {skillList.map((skill: Skill, index: number) => {
               // Randomize size based on proficiency
               const sizeClass = 
                 skill.proficiency >= 85 ? 'text-lg px-6 py-3' :
                 skill.proficiency >= 75 ? 'text-base px-5 py-2.5' :
                 'text-sm px-4 py-2';
+              
+              const gradientColor = colorGradients[skill.category] || colorGradients.other;
 
               return (
                 <div
-                  key={skill.name}
+                  key={skill._id}
                   className={`skill-badge group relative ${sizeClass} font-medium rounded-full border border-primary/20 bg-card/80 backdrop-blur-sm hover:border-primary hover:scale-110 transition-all duration-300 cursor-pointer`}
                   style={{
                     // Add slight random positioning offset for more organic feel

@@ -3,8 +3,27 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import Image from 'next/image';
+import { urlFor } from '@/lib/sanity/image';
+import type { PersonalInfo } from '@/lib/sanity/types';
 
-export function Hero() {
+interface HeroProps {
+  personalInfo: PersonalInfo | null;
+}
+
+export function Hero({ personalInfo }: HeroProps) {
+  // Fallback data if Sanity data is not available
+  const name = personalInfo?.name || 'Divya Panchori';
+  const tagline = personalInfo?.tagline || 'Software Engineer';
+  const email = personalInfo?.email || 'dpanchori94@gmail.com';
+  const github = personalInfo?.social?.github || 'https://github.com/divyavert';
+  const linkedin = personalInfo?.social?.linkedin || 'https://linkedin.com/in/divya-panchori';
+  const stats = personalInfo?.stats || {
+    yearsExperience: 2,
+    projectsCompleted: 10,
+    coffeesCoded: 37
+  };
+  const resumeUrl = personalInfo?.resumeFile?.asset?.url || '/resume.pdf';
+  const profileImage = personalInfo?.profileImage ? urlFor(personalInfo.profileImage).width(400).height(400).url() : null;
   const heroRef = useRef<HTMLElement>(null);
   const profileCardRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -113,19 +132,29 @@ export function Hero() {
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent-purple/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               
               <div className="relative z-10">
-                {/* Profile Image Placeholder - will be replaced with Sanity image */}
+                {/* Profile Image */}
                 <div className="w-48 h-48 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-primary/20 to-accent-purple/20 flex items-center justify-center text-6xl relative overflow-hidden">
                   {/* Shimmer effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-shimmer"></div>
-                  <span className="relative z-10">DP</span>
+                  {profileImage ? (
+                    <Image 
+                      src={profileImage} 
+                      alt={name}
+                      width={192}
+                      height={192}
+                      className="w-full h-full object-cover rounded-2xl"
+                    />
+                  ) : (
+                    <span className="relative z-10">{name.split(' ').map(n => n[0]).join('')}</span>
+                  )}
                 </div>
                 
                 <h2 className="text-3xl font-heading font-bold text-center mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
-                  Divya Panchori
+                  {name}
                 </h2>
                 
                 <p className="text-center text-primary font-medium mb-2 text-lg">
-                  Software Engineer
+                  {tagline}
                 </p>
                 
                 <p className="text-center text-muted-foreground mb-6 text-sm leading-relaxed px-4">
@@ -135,7 +164,7 @@ export function Hero() {
                 {/* Social Links */}
                 <div className="flex justify-center gap-3">
                   <a
-                    href="https://github.com/divyavert"
+                    href={github}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group/social w-12 h-12 rounded-xl bg-card-hover border border-primary/20 hover:border-primary hover:bg-primary/10 flex items-center justify-center transition-all duration-300 hover:scale-110"
@@ -146,7 +175,7 @@ export function Hero() {
                     </svg>
                   </a>
                   <a
-                    href="https://linkedin.com/in/divya-panchori"
+                    href={linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group/social w-12 h-12 rounded-xl bg-card-hover border border-primary/20 hover:border-primary hover:bg-primary/10 flex items-center justify-center transition-all duration-300 hover:scale-110"
@@ -157,7 +186,7 @@ export function Hero() {
                     </svg>
                   </a>
                   <a
-                    href="mailto:dpanchori94@gmail.com"
+                    href={`mailto:${email}`}
                     className="group/social w-12 h-12 rounded-xl bg-card-hover border border-primary/20 hover:border-primary hover:bg-primary/10 flex items-center justify-center transition-all duration-300 hover:scale-110"
                     aria-label="Email"
                   >
@@ -193,7 +222,7 @@ export function Hero() {
             <div ref={statsRef} className="grid grid-cols-3 gap-3 md:gap-4 mb-8">
               <div className="stat-card bg-card/80 backdrop-blur-sm rounded-2xl p-4 md:p-6 text-center border border-primary/10 hover:border-primary/30 transition-colors group">
                 <div className="text-3xl md:text-4xl font-heading font-bold bg-gradient-to-br from-primary to-accent-purple bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">
-                  2+
+                  {stats.yearsExperience}+
                 </div>
                 <div className="text-xs md:text-sm text-muted-foreground leading-tight">
                   YEARS OF<br />EXPERIENCE
@@ -201,7 +230,7 @@ export function Hero() {
               </div>
               <div className="stat-card bg-card/80 backdrop-blur-sm rounded-2xl p-4 md:p-6 text-center border border-primary/10 hover:border-primary/30 transition-colors group">
                 <div className="text-3xl md:text-4xl font-heading font-bold bg-gradient-to-br from-primary to-accent-purple bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">
-                  10+
+                  {stats.projectsCompleted}+
                 </div>
                 <div className="text-xs md:text-sm text-muted-foreground leading-tight">
                   PROJECTS<br />COMPLETED
@@ -209,7 +238,7 @@ export function Hero() {
               </div>
               <div className="stat-card bg-card/80 backdrop-blur-sm rounded-2xl p-4 md:p-6 text-center border border-primary/10 hover:border-primary/30 transition-colors group">
                 <div className="text-3xl md:text-4xl font-heading font-bold bg-gradient-to-br from-primary to-accent-purple bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">
-                  37+
+                  {stats.coffeesCoded || 37}+
                 </div>
                 <div className="text-xs md:text-sm text-muted-foreground leading-tight">
                   USERS<br />IMPACTED
@@ -219,7 +248,7 @@ export function Hero() {
 
             <a
               ref={buttonRef}
-              href="/resume.pdf"
+              href={resumeUrl}
               download
               className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-primary to-accent-purple text-primary-foreground rounded-full font-medium hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 hover:scale-105"
             >

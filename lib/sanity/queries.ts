@@ -262,6 +262,22 @@ export const relatedBlogPostsQuery = groq`
   }
 `;
 
+// Latest Blog Post Query
+export const latestBlogPostQuery = groq`
+  *[_type == "blogPost"] | order(publishedAt desc) [0] {
+    _id,
+    title,
+    slug,
+    excerpt,
+    mainImage,
+    categories,
+    tags,
+    publishedAt,
+    readingTime,
+    featured
+  }
+`;
+
 // Currently Loving Query
 export const currentlyLovingQuery = groq`
   *[_type == "currentlyLoving" && active == true][0] {

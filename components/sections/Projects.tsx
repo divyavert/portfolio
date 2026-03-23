@@ -3,64 +3,47 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Image from 'next/image';
+import { urlFor } from '@/lib/sanity/image';
+import type { Project } from '@/lib/sanity/types';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Placeholder data - will be replaced with Sanity CMS
-const projects = [
+interface ProjectsProps {
+  projects: Project[];
+}
+
+// Color options for projects
+const colorOptions = [
+  'from-accent-blue/20 to-accent-purple/20',
+  'from-accent-pink/20 to-accent-purple/20',
+  'from-accent-green/20 to-accent-blue/20',
+  'from-accent-yellow/20 to-accent-green/20',
+  'from-accent-purple/20 to-accent-pink/20',
+];
+
+// Fallback data
+const fallbackProjects = [
   {
-    id: 1,
+    _id: '1',
     title: 'E-Commerce Platform',
     description: 'Full-stack e-commerce solution with payment integration',
-    tech: ['Next.js', 'Stripe', 'PostgreSQL'],
-    color: 'from-accent-blue/20 to-accent-purple/20',
-    size: 'large', // Takes 2 columns
+    technologies: ['Next.js', 'Stripe', 'PostgreSQL'],
     liveUrl: '#',
     githubUrl: '#',
   },
   {
-    id: 2,
+    _id: '2',
     title: 'Task Manager',
     description: 'Real-time collaboration tool',
-    tech: ['React', 'Socket.io', 'Node.js'],
-    color: 'from-accent-pink/20 to-accent-purple/20',
-    size: 'medium',
-    liveUrl: '#',
-    githubUrl: '#',
-  },
-  {
-    id: 3,
-    title: 'Weather App',
-    description: 'Beautiful weather forecasting',
-    tech: ['React', 'API', 'Tailwind'],
-    color: 'from-accent-green/20 to-accent-blue/20',
-    size: 'medium',
-    liveUrl: '#',
-    githubUrl: '#',
-  },
-  {
-    id: 4,
-    title: 'Portfolio CMS',
-    description: 'Content management system',
-    tech: ['Sanity', 'Next.js', 'TypeScript'],
-    color: 'from-accent-yellow/20 to-accent-green/20',
-    size: 'large',
-    liveUrl: '#',
-    githubUrl: '#',
-  },
-  {
-    id: 5,
-    title: 'Chat Application',
-    description: 'Real-time messaging app',
-    tech: ['React', 'Firebase', 'TailwindCSS'],
-    color: 'from-accent-purple/20 to-accent-pink/20',
-    size: 'medium',
+    technologies: ['React', 'Socket.io', 'Node.js'],
     liveUrl: '#',
     githubUrl: '#',
   },
 ];
 
-export default function Projects() {
+export default function Projects({ projects: sanityProjects }: ProjectsProps) {
+  const projectList = sanityProjects && sanityProjects.length > 0 ? sanityProjects : fallbackProjects as any[];
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
@@ -119,17 +102,32 @@ export default function Projects() {
           ref={cardsRef}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto"
         >
-          {projects.map((project, index) => (
+          {projectList.map((project: any, index: number) => {
+            const color = colorOptions[index % colorOptions.length];
+            const projectImage = project.image ? urlFor(project.image).width(600).height(400).url() : null;
+            
+            return (
             <div
-              key={project.id}
+              key={project._id}
               className={`project-card group relative overflow-hidden rounded-2xl border border-primary/20 bg-card/80 backdrop-blur-sm hover:border-primary/50 transition-all duration-500 hover:scale-[1.02] ${
-                project.size === 'large' ? 'md:col-span-2' : ''
+                index === 0 || index === 3 ? 'md:col-span-2' : ''
               } ${index === 0 ? 'lg:row-span-2' : ''}`}
             >
-              {/* Background Gradient */}
-              <div
-                className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-50 group-hover:opacity-70 transition-opacity duration-500`}
-              ></div>
+              {/* Background Gradient or Image */}
+              {projectImage ? (
+                <div className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-500">
+                  <Image 
+                    src={projectImage} 
+                    alt={project.title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              ) : (
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${color} opacity-50 group-hover:opacity-70 transition-opacity duration-500`}
+                ></div>
+              )}
 
               {/* Content */}
               <div className="relative p-6 h-full flex flex-col justify-between min-h-[280px]">
@@ -146,7 +144,7 @@ export default function Projects() {
 
                   {/* Tech Stack */}
                   <div className="flex flex-wrap gap-2 mb-6">
-                    {project.tech.map((tech) => (
+                    {project.technologies?.map((tech: string) => (
                       <span
                         key={tech}
                         className="px-3 py-1 bg-background/50 backdrop-blur-sm rounded-full text-xs font-mono border border-primary/20"
@@ -200,7 +198,7 @@ export default function Projects() {
               {/* Hover Effect Border */}
               <div className="absolute inset-0 border-2 border-transparent group-hover:border-primary/20 rounded-2xl pointer-events-none transition-all duration-500"></div>
             </div>
-          ))}
+          )})}
         </div>
 
         {/* View More Button */}

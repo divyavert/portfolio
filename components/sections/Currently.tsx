@@ -6,35 +6,40 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Image from 'next/image';
 import { getAlbumCover } from '@/lib/api/itunes';
 import { getMoviePoster } from '@/lib/api/tmdb';
+import type { CurrentlyLoving, RecentlyWatched, BlogPost, PersonalInfo } from '@/lib/sanity/types';
+import { urlFor } from '@/lib/sanity/image';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Placeholder data - will be replaced with Sanity CMS
-const placeholderData = {
-  music: {
+interface CurrentlyProps {
+  currentlyLoving: CurrentlyLoving | null;
+  recentlyWatched: RecentlyWatched | null;
+  latestBlogPost: BlogPost | null;
+  personalInfo: PersonalInfo | null;
+}
+
+export default function Currently({ 
+  currentlyLoving, 
+  recentlyWatched, 
+  latestBlogPost,
+  personalInfo 
+}: CurrentlyProps) {
+  // Fallback data
+  const musicData = currentlyLoving || {
     songName: 'Shape of You',
     artistName: 'Ed Sheeran',
     albumName: '÷ (Divide)',
-  },
-  movie: {
+  };
+  
+  const movieData = recentlyWatched || {
     title: 'Inception',
     type: 'movie' as const,
     year: 2010,
     rating: 5,
     genre: 'Sci-Fi',
-  },
-  learning: {
-    skill: 'Java Spring Boot',
-    progress: 65,
-  },
-  location: {
-    city: 'Ahmedabad',
-    country: 'India',
-    timezone: 'Asia/Kolkata',
-  },
-};
-
-export default function Currently() {
+  };
+  
+  const location = personalInfo?.location || 'Ahmedabad, India';
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
@@ -49,28 +54,28 @@ export default function Currently() {
     async function fetchAlbumCover() {
       setLoadingAlbum(true);
       const cover = await getAlbumCover(
-        placeholderData.music.songName,
-        placeholderData.music.artistName
+        musicData.songName,
+        musicData.artistName
       );
       setAlbumCover(cover);
       setLoadingAlbum(false);
     }
     fetchAlbumCover();
-  }, []);
+  }, [musicData.songName, musicData.artistName]);
 
   // Fetch movie poster
   useEffect(() => {
     async function fetchMoviePoster() {
       setLoadingMovie(true);
       const poster = await getMoviePoster(
-        placeholderData.movie.title,
-        placeholderData.movie.type
+        movieData.title,
+        movieData.type
       );
       setMoviePoster(poster);
       setLoadingMovie(false);
     }
     fetchMoviePoster();
-  }, []);
+  }, [movieData.title, movieData.type]);
 
   useEffect(() => {
     // Update time every second
@@ -114,7 +119,7 @@ export default function Currently() {
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString('en-US', {
-      timeZone: placeholderData.location.timezone,
+      timeZone: 'Asia/Kolkata',
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
@@ -207,7 +212,7 @@ export default function Currently() {
                 <>
                   <Image
                     src={albumCover}
-                    alt={`${placeholderData.music.songName} album cover`}
+                    alt={`${musicData.songName} album cover`}
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -237,10 +242,10 @@ export default function Currently() {
 
             <div>
               <p className="font-heading font-bold text-sm mb-1 line-clamp-1">
-                {placeholderData.music.songName}
+                {musicData.songName}
               </p>
               <p className="text-xs text-muted-foreground line-clamp-1">
-                {placeholderData.music.artistName}
+                {musicData.artistName}
               </p>
             </div>
           </div>
@@ -294,19 +299,19 @@ export default function Currently() {
                 <span className="text-3xl">☕</span>
               </div>
               <p className="font-heading font-bold text-center mb-2">
-                {placeholderData.learning.skill}
+                Java Spring Boot
               </p>
             </div>
 
             <div>
               <div className="flex justify-between text-xs text-muted-foreground mb-2">
                 <span>Progress</span>
-                <span>{placeholderData.learning.progress}%</span>
+                <span>65%</span>
               </div>
               <div className="h-2 bg-background/50 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-gradient-to-r from-accent-green to-accent-blue rounded-full transition-all duration-1000"
-                  style={{ width: `${placeholderData.learning.progress}%` }}
+                  style={{ width: `65%` }}
                 />
               </div>
             </div>
@@ -334,7 +339,7 @@ export default function Currently() {
               ) : moviePoster ? (
                 <Image
                   src={moviePoster}
-                  alt={`${placeholderData.movie.title} poster`}
+                  alt={`${movieData.title} poster`}
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -350,13 +355,13 @@ export default function Currently() {
 
             <div>
               <p className="font-heading font-bold text-sm mb-1 line-clamp-1">
-                {placeholderData.movie.title}
+                {movieData.title}
               </p>
               <p className="text-xs text-muted-foreground mb-2">
-                {placeholderData.movie.genre} • {placeholderData.movie.year}
+                {movieData.genre} • {movieData.year}
               </p>
               <div className="flex items-center gap-1">
-                {renderStars(placeholderData.movie.rating)}
+                {renderStars(movieData.rating || 5)}
               </div>
             </div>
           </div>
@@ -378,10 +383,10 @@ export default function Currently() {
               {/* Location */}
               <div>
                 <p className="text-2xl font-heading font-bold mb-1">
-                  {placeholderData.location.city}
+                  Ahmedabad
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  {placeholderData.location.country}
+                  India
                 </p>
               </div>
 

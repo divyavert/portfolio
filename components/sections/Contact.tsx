@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import type { PersonalInfo } from '@/lib/sanity/types';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,7 +21,20 @@ interface FormErrors {
   message?: string;
 }
 
-export default function Contact() {
+interface ContactProps {
+  personalInfo: PersonalInfo | null;
+}
+
+export default function Contact({ personalInfo }: ContactProps) {
+  // Fallback data
+  const email = personalInfo?.email || 'dpanchori94@gmail.com';
+  const github = personalInfo?.social?.github || 'https://github.com/divyavert';
+  const linkedin = personalInfo?.social?.linkedin || 'https://linkedin.com/in/divya-panchori';
+  const stats = personalInfo?.stats || {
+    yearsExperience: 2,
+    projectsCompleted: 10,
+    technologiesMastered: 20
+  };
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -172,10 +186,10 @@ export default function Contact() {
                 <div>
                   <h3 className="font-heading font-bold mb-1">Email</h3>
                   <a
-                    href="mailto:dpanchori94@gmail.com"
+                    href={`mailto:${email}`}
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    dpanchori94@gmail.com
+                    {email}
                   </a>
                 </div>
               </div>
@@ -189,12 +203,12 @@ export default function Contact() {
                 <div>
                   <h3 className="font-heading font-bold mb-1">GitHub</h3>
                   <a
-                    href="https://github.com/divyavert"
+                    href={github}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    github.com/divyavert
+                    {github.replace('https://', '')}
                   </a>
                 </div>
               </div>
@@ -208,12 +222,12 @@ export default function Contact() {
                 <div>
                   <h3 className="font-heading font-bold mb-1">LinkedIn</h3>
                   <a
-                    href="https://linkedin.com/in/divya-panchori"
+                    href={linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    linkedin.com/in/divya-panchori
+                    {linkedin.replace('https://', '')}
                   </a>
                 </div>
               </div>
