@@ -115,3 +115,24 @@ export interface BlogPost {
     ogImage?: SanityImageSource;
   };
 }
+
+export interface CurrentlyLoving {
+  _id: string;
+  songName: string;
+  artistName: string;
+  albumName?: string;
+  albumCover?: SanityImageSource;
+  spotifyUrl?: string;
+}
+
+export interface RecentlyWatched {
+  _id: string;
+  title: string;
+  type: 'movie' | 'show';
+  year?: number;
+  rating?: number;
+  poster?: SanityImageSource;
+  genre?: string;
+  thoughts?: string;
+  watchedDate: string;
+}

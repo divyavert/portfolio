@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/sections/Hero";
-import Terminal from "@/components/sections/Terminal";
+import Currently from "@/components/sections/Currently";
 import Projects from "@/components/sections/Projects";
 import Skills from "@/components/sections/Skills";
 import Experience from "@/components/sections/Experience";
@@ -20,7 +20,7 @@ export default function HomePage() {
       <Navigation />
       <main className="min-h-screen">
         <Hero />
-        <Terminal />
+        <Currently />
         <Projects />
         <Skills />
         <Experience />

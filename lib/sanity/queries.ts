@@ -261,3 +261,30 @@ export const relatedBlogPostsQuery = groq`
     }
   }
 `;
+
+// Currently Loving Query
+export const currentlyLovingQuery = groq`
+  *[_type == "currentlyLoving" && active == true][0] {
+    _id,
+    songName,
+    artistName,
+    albumName,
+    albumCover,
+    spotifyUrl
+  }
+`;
+
+// Recently Watched Query
+export const recentlyWatchedQuery = groq`
+  *[_type == "recentlyWatched" && active == true] | order(watchedDate desc) [0] {
+    _id,
+    title,
+    type,
+    year,
+    rating,
+    poster,
+    genre,
+    thoughts,
+    watchedDate
+  }
+`;
