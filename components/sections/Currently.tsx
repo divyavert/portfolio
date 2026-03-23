@@ -251,8 +251,8 @@ export default function Currently({
           </div>
 
           {/* Barcelona FC */}
-          <div className="currently-card bg-gradient-to-br from-[#004d98]/10 to-[#a50044]/10 backdrop-blur-sm rounded-2xl p-6 border border-primary/20 hover:border-[#a50044]/50 transition-all duration-300 group hover:scale-[1.02]">
-            <div className="flex items-start gap-3 mb-4">
+          <div className="currently-card bg-gradient-to-br from-[#004d98]/10 to-[#a50044]/10 backdrop-blur-sm rounded-2xl p-4 border border-primary/20 hover:border-[#a50044]/50 transition-all duration-300 group hover:scale-[1.02]">
+            <div className="flex items-start gap-3 mb-3">
               <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-[#004d98]/20 flex items-center justify-center">
                 <svg className="w-6 h-6 text-[#a50044]" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8.5 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm-.5 4.5c-1.657 0-3-.895-3-2h6c0 1.105-1.343 2-3 2z" />
@@ -264,17 +264,17 @@ export default function Currently({
             </div>
 
             {/* Barcelona Badge */}
-            <div className="flex items-center justify-center mb-6">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#004d98] to-[#a50044] p-1">
+            <div className="flex items-center justify-center mb-4">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#004d98] to-[#a50044] p-1">
                 <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
-                  <span className="text-3xl font-bold bg-gradient-to-br from-[#004d98] to-[#a50044] bg-clip-text text-transparent">
+                  <span className="text-2xl font-bold bg-gradient-to-br from-[#004d98] to-[#a50044] bg-clip-text text-transparent">
                     FCB
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="text-center space-y-2">
+            <div className="text-center space-y-1">
               <p className="text-xs text-muted-foreground">Next Match</p>
               <p className="font-heading font-bold text-sm">Real Madrid</p>
               <p className="text-xs text-muted-foreground">El Clásico • 3 days</p>
@@ -282,8 +282,8 @@ export default function Currently({
           </div>
 
           {/* Currently Learning */}
-          <div className="currently-card bg-gradient-to-br from-accent-green/10 to-accent-blue/10 backdrop-blur-sm rounded-2xl p-6 border border-primary/20 hover:border-primary/50 transition-all duration-300 group hover:scale-[1.02]">
-            <div className="flex items-start gap-3 mb-4">
+          <div className="currently-card bg-gradient-to-br from-accent-green/10 to-accent-blue/10 backdrop-blur-sm rounded-2xl p-4 border border-primary/20 hover:border-primary/50 transition-all duration-300 group hover:scale-[1.02]">
+            <div className="flex items-start gap-3 mb-3">
               <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-accent-green/20 flex items-center justify-center">
                 <svg className="w-5 h-5 text-accent-green" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
@@ -294,11 +294,11 @@ export default function Currently({
               </div>
             </div>
 
-            <div className="mb-6">
-              <div className="flex items-center justify-center w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-accent-green/20 to-accent-blue/20 mb-4">
-                <span className="text-3xl">☕</span>
+            <div className="mb-4">
+              <div className="flex items-center justify-center w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-accent-green/20 to-accent-blue/20 mb-3">
+                <span className="text-2xl">☕</span>
               </div>
-              <p className="font-heading font-bold text-center mb-2">
+              <p className="font-heading font-bold text-center text-sm mb-2">
                 Java Spring Boot
               </p>
             </div>
@@ -318,8 +318,8 @@ export default function Currently({
           </div>
 
           {/* Recently Watched */}
-          <div className="currently-card bg-gradient-to-br from-accent-blue/10 to-accent-purple/10 backdrop-blur-sm rounded-2xl p-6 border border-primary/20 hover:border-primary/50 transition-all duration-300 group hover:scale-[1.02]">
-            <div className="flex items-start gap-3 mb-4">
+          <div className="currently-card bg-gradient-to-br from-accent-blue/10 to-accent-purple/10 backdrop-blur-sm rounded-2xl p-4 border border-primary/20 hover:border-primary/50 transition-all duration-300 group hover:scale-[1.02]">
+            <div className="flex items-start gap-3 mb-3">
               <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-accent-blue/20 flex items-center justify-center">
                 <svg className="w-5 h-5 text-accent-blue" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
@@ -330,11 +330,11 @@ export default function Currently({
               </div>
             </div>
 
-            {/* Movie Poster */}
-            <div className="w-full aspect-[2/3] rounded-xl mb-4 relative overflow-hidden group-hover:scale-105 transition-transform bg-gradient-to-br from-accent-blue/20 to-accent-purple/20">
+            {/* Movie Poster - More compact */}
+            <div className="w-full aspect-[2/3] max-h-48 rounded-xl mb-3 relative overflow-hidden group-hover:scale-105 transition-transform bg-gradient-to-br from-accent-blue/20 to-accent-purple/20">
               {loadingMovie ? (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-blue"></div>
+                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-accent-blue"></div>
                 </div>
               ) : moviePoster ? (
                 <Image
@@ -346,7 +346,7 @@ export default function Currently({
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <svg className="w-16 h-16 text-muted/30" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-12 h-12 text-muted/30" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm3 2h6v4H7V5zm8 8v2h1v-2h-1zm-2-2H7v4h6v-4zm2 0h1V9h-1v2zm1-4V5h-1v2h1zM5 5v2H4V5h1zm0 4H4v2h1V9zm-1 4h1v2H4v-2z" clipRule="evenodd" />
                   </svg>
                 </div>
@@ -362,49 +362,6 @@ export default function Currently({
               </p>
               <div className="flex items-center gap-1">
                 {renderStars(movieData.rating || 5)}
-              </div>
-            </div>
-          </div>
-
-          {/* Location & Time */}
-          <div className="currently-card bg-gradient-to-br from-accent-yellow/10 to-primary/10 backdrop-blur-sm rounded-2xl p-6 border border-primary/20 hover:border-primary/50 transition-all duration-300 group hover:scale-[1.02]">
-            <div className="flex items-start gap-3 mb-4">
-              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-accent-yellow/20 flex items-center justify-center">
-                <svg className="w-5 h-5 text-accent-yellow" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">Location</h3>
-              </div>
-            </div>
-
-            <div className="text-center space-y-4">
-              {/* Location */}
-              <div>
-                <p className="text-2xl font-heading font-bold mb-1">
-                  Ahmedabad
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  India
-                </p>
-              </div>
-
-              {/* Divider */}
-              <div className="h-px bg-primary/20"></div>
-
-              {/* Live Clock */}
-              <div>
-                <p className="text-xs text-muted-foreground mb-2">Local Time</p>
-                <p className="text-3xl font-heading font-bold font-mono text-primary">
-                  {formatTime(currentTime)}
-                </p>
-              </div>
-
-              {/* Availability */}
-              <div className="flex items-center justify-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-accent-green animate-pulse"></div>
-                <span className="text-xs text-accent-green font-medium">Available for work</span>
               </div>
             </div>
           </div>
