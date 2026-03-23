@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/sections/Hero";
+import Terminal from "@/components/sections/Terminal";
+import Projects from "@/components/sections/Projects";
 import AnimatedIntro from "@/components/intro/AnimatedIntro";
 
 export default function HomePage() {
@@ -15,21 +17,10 @@ export default function HomePage() {
       <Navigation />
       <main className="min-h-screen">
         <Hero />
+        <Terminal />
+        <Projects />
         
         {/* Placeholder sections */}
-        <section id="terminal" className="min-h-screen flex items-center justify-center bg-card/50">
-          <div className="text-center">
-            <h2 className="text-4xl font-heading font-bold mb-4">Terminal Section</h2>
-            <p className="text-muted">Coming soon...</p>
-          </div>
-        </section>
-
-        <section id="projects" className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <h2 className="text-4xl font-heading font-bold mb-4">Projects</h2>
-            <p className="text-muted">Coming soon...</p>
-          </div>
-        </section>
 
         <section id="skills" className="min-h-screen flex items-center justify-center bg-card/50">
           <div className="text-center">
