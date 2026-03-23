@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Image from 'next/image';
+import { getAlbumCover } from '@/lib/api/itunes';
+import { getMoviePoster } from '@/lib/api/tmdb';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -37,6 +39,38 @@ export default function Currently() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [albumCover, setAlbumCover] = useState<string | null>(null);
+  const [moviePoster, setMoviePoster] = useState<string | null>(null);
+  const [loadingAlbum, setLoadingAlbum] = useState(true);
+  const [loadingMovie, setLoadingMovie] = useState(true);
+
+  // Fetch album cover
+  useEffect(() => {
+    async function fetchAlbumCover() {
+      setLoadingAlbum(true);
+      const cover = await getAlbumCover(
+        placeholderData.music.songName,
+        placeholderData.music.artistName
+      );
+      setAlbumCover(cover);
+      setLoadingAlbum(false);
+    }
+    fetchAlbumCover();
+  }, []);
+
+  // Fetch movie poster
+  useEffect(() => {
+    async function fetchMoviePoster() {
+      setLoadingMovie(true);
+      const poster = await getMoviePoster(
+        placeholderData.movie.title,
+        placeholderData.movie.type
+      );
+      setMoviePoster(poster);
+      setLoadingMovie(false);
+    }
+    fetchMoviePoster();
+  }, []);
 
   useEffect(() => {
     // Update time every second
@@ -163,24 +197,42 @@ export default function Currently() {
               </div>
             </div>
             
-            {/* Album Cover Placeholder */}
-            <div className="w-full aspect-square rounded-xl bg-gradient-to-br from-accent-pink/20 to-accent-purple/20 mb-4 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform">
-              <svg className="w-16 h-16 text-muted/30" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
-              </svg>
-              {/* Animated equalizer bars */}
-              <div className="absolute bottom-3 right-3 flex items-end gap-1">
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    className="w-1 bg-accent-pink rounded-full animate-pulse"
-                    style={{
-                      height: `${Math.random() * 20 + 10}px`,
-                      animationDelay: `${i * 0.15}s`,
-                    }}
+            {/* Album Cover */}
+            <div className="w-full aspect-square rounded-xl mb-4 relative overflow-hidden group-hover:scale-105 transition-transform bg-gradient-to-br from-accent-pink/20 to-accent-purple/20">
+              {loadingAlbum ? (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-pink"></div>
+                </div>
+              ) : albumCover ? (
+                <>
+                  <Image
+                    src={albumCover}
+                    alt={`${placeholderData.music.songName} album cover`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
-                ))}
-              </div>
+                  {/* Animated equalizer bars overlay */}
+                  <div className="absolute bottom-3 right-3 flex items-end gap-1 bg-background/80 backdrop-blur-sm rounded-lg px-2 py-1">
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        key={i}
+                        className="w-1 bg-accent-pink rounded-full animate-pulse"
+                        style={{
+                          height: `${Math.random() * 12 + 8}px`,
+                          animationDelay: `${i * 0.15}s`,
+                        }}
+                      />
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <svg className="w-16 h-16 text-muted/30" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
+                  </svg>
+                </div>
+              )}
             </div>
 
             <div>
@@ -273,11 +325,27 @@ export default function Currently() {
               </div>
             </div>
 
-            {/* Movie Poster Placeholder */}
-            <div className="w-full aspect-[2/3] rounded-xl bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 mb-4 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform">
-              <svg className="w-16 h-16 text-muted/30" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm3 2h6v4H7V5zm8 8v2h1v-2h-1zm-2-2H7v4h6v-4zm2 0h1V9h-1v2zm1-4V5h-1v2h1zM5 5v2H4V5h1zm0 4H4v2h1V9zm-1 4h1v2H4v-2z" clipRule="evenodd" />
-              </svg>
+            {/* Movie Poster */}
+            <div className="w-full aspect-[2/3] rounded-xl mb-4 relative overflow-hidden group-hover:scale-105 transition-transform bg-gradient-to-br from-accent-blue/20 to-accent-purple/20">
+              {loadingMovie ? (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-blue"></div>
+                </div>
+              ) : moviePoster ? (
+                <Image
+                  src={moviePoster}
+                  alt={`${placeholderData.movie.title} poster`}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <svg className="w-16 h-16 text-muted/30" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm3 2h6v4H7V5zm8 8v2h1v-2h-1zm-2-2H7v4h6v-4zm2 0h1V9h-1v2zm1-4V5h-1v2h1zM5 5v2H4V5h1zm0 4H4v2h1V9zm-1 4h1v2H4v-2z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              )}
             </div>
 
             <div>
