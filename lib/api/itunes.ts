@@ -13,6 +13,11 @@ export interface ITunesResponse {
   }[];
 }
 
+export interface MusicData {
+  albumCover: string | null;
+  previewUrl: string | null;
+}
+
 export async function getAlbumCover(
   songName: string,
   artistName: string
@@ -39,6 +44,39 @@ export async function getAlbumCover(
   } catch (error) {
     console.error('Error fetching album cover:', error);
     return null;
+  }
+}
+
+export async function getMusicData(
+  songName: string,
+  artistName: string
+): Promise<MusicData> {
+  try {
+    const query = encodeURIComponent(`${songName} ${artistName}`);
+    const response = await fetch(
+      `https://itunes.apple.com/search?term=${query}&media=music&entity=song&limit=1`
+    );
+
+    if (!response.ok) {
+      throw new Error('iTunes API request failed');
+    }
+
+    const data: ITunesResponse = await response.json();
+
+    if (data.resultCount > 0 && data.results[0]) {
+      const result = data.results[0];
+      // Get high-res artwork (replace 100x100 with 600x600)
+      const artworkUrl = result.artworkUrl100.replace('100x100', '600x600');
+      return {
+        albumCover: artworkUrl,
+        previewUrl: result.previewUrl || null,
+      };
+    }
+
+    return { albumCover: null, previewUrl: null };
+  } catch (error) {
+    console.error('Error fetching music data:', error);
+    return { albumCover: null, previewUrl: null };
   }
 }
 

@@ -4,10 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Image from 'next/image';
-import { getAlbumCover } from '@/lib/api/itunes';
+import { getMusicData } from '@/lib/api/itunes';
 import { getMoviePoster } from '@/lib/api/tmdb';
 import type { CurrentlyLoving, RecentlyWatched, BlogPost, PersonalInfo } from '@/lib/sanity/types';
 import { urlFor } from '@/lib/sanity/image';
+import { MusicPlayer } from '@/components/MusicPlayer';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -45,22 +46,24 @@ export default function Currently({
   const cardsRef = useRef<HTMLDivElement>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [albumCover, setAlbumCover] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [moviePoster, setMoviePoster] = useState<string | null>(null);
   const [loadingAlbum, setLoadingAlbum] = useState(true);
   const [loadingMovie, setLoadingMovie] = useState(true);
 
-  // Fetch album cover
+  // Fetch music data (album cover and preview URL)
   useEffect(() => {
-    async function fetchAlbumCover() {
+    async function fetchMusicData() {
       setLoadingAlbum(true);
-      const cover = await getAlbumCover(
+      const data = await getMusicData(
         musicData.songName,
         musicData.artistName
       );
-      setAlbumCover(cover);
+      setAlbumCover(data.albumCover);
+      setPreviewUrl(data.previewUrl);
       setLoadingAlbum(false);
     }
-    fetchAlbumCover();
+    fetchMusicData();
   }, [musicData.songName, musicData.artistName]);
 
   // Fetch movie poster
@@ -190,64 +193,14 @@ export default function Currently({
           </div>
 
           {/* Currently Loving Music */}
-          <div className="currently-card bg-gradient-to-br from-accent-pink/10 to-accent-purple/10 backdrop-blur-sm rounded-2xl p-6 border border-primary/20 hover:border-primary/50 transition-all duration-300 group hover:scale-[1.02]">
-            <div className="flex items-start gap-3 mb-4">
-              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-accent-pink/20 flex items-center justify-center">
-                <svg className="w-5 h-5 text-accent-pink" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
-                </svg>
-              </div>
-              <div className="flex-1">
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">Currently Loving</h3>
-              </div>
-            </div>
-            
-            {/* Album Cover */}
-            <div className="w-full aspect-square rounded-xl mb-4 relative overflow-hidden group-hover:scale-105 transition-transform bg-gradient-to-br from-accent-pink/20 to-accent-purple/20">
-              {loadingAlbum ? (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-pink"></div>
-                </div>
-              ) : albumCover ? (
-                <>
-                  <Image
-                    src={albumCover}
-                    alt={`${musicData.songName} album cover`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                  {/* Animated equalizer bars overlay */}
-                  <div className="absolute bottom-3 right-3 flex items-end gap-1 bg-background/80 backdrop-blur-sm rounded-lg px-2 py-1">
-                    {[1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="w-1 bg-accent-pink rounded-full animate-pulse"
-                        style={{
-                          height: `${Math.random() * 12 + 8}px`,
-                          animationDelay: `${i * 0.15}s`,
-                        }}
-                      />
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <svg className="w-16 h-16 text-muted/30" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
-                  </svg>
-                </div>
-              )}
-            </div>
-
-            <div>
-              <p className="font-heading font-bold text-sm mb-1 line-clamp-1">
-                {musicData.songName}
-              </p>
-              <p className="text-xs text-muted-foreground line-clamp-1">
-                {musicData.artistName}
-              </p>
-            </div>
+          <div className="currently-card">
+            <MusicPlayer
+              songName={musicData.songName}
+              artistName={musicData.artistName}
+              albumCover={albumCover}
+              previewUrl={previewUrl}
+              loading={loadingAlbum}
+            />
           </div>
 
           {/* Barcelona FC */}
