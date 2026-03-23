@@ -6,6 +6,9 @@ import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/sections/Hero";
 import Terminal from "@/components/sections/Terminal";
 import Projects from "@/components/sections/Projects";
+import Skills from "@/components/sections/Skills";
+import Experience from "@/components/sections/Experience";
+import Contact from "@/components/sections/Contact";
 import AnimatedIntro from "@/components/intro/AnimatedIntro";
 
 export default function HomePage() {
@@ -19,29 +22,9 @@ export default function HomePage() {
         <Hero />
         <Terminal />
         <Projects />
-        
-        {/* Placeholder sections */}
-
-        <section id="skills" className="min-h-screen flex items-center justify-center bg-card/50">
-          <div className="text-center">
-            <h2 className="text-4xl font-heading font-bold mb-4">Skills</h2>
-            <p className="text-muted">Coming soon...</p>
-          </div>
-        </section>
-
-        <section id="experience" className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <h2 className="text-4xl font-heading font-bold mb-4">Experience</h2>
-            <p className="text-muted">Coming soon...</p>
-          </div>
-        </section>
-
-        <section id="contact" className="min-h-screen flex items-center justify-center bg-card/50">
-          <div className="text-center">
-            <h2 className="text-4xl font-heading font-bold mb-4">Contact</h2>
-            <p className="text-muted">Coming soon...</p>
-          </div>
-        </section>
+        <Skills />
+        <Experience />
+        <Contact />
       </main>
       <Footer />
     </>
