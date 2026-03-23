@@ -107,13 +107,13 @@ export function MusicPlayer({
   };
 
   return (
-    <div className="currently-card bg-gradient-to-br from-accent-pink/10 to-accent-purple/10 backdrop-blur-sm rounded-2xl overflow-hidden border border-primary/20 hover:border-primary/50 transition-all duration-300 group hover:scale-[1.02]">
+    <div className="currently-card bg-gradient-to-br from-[#FFE5D9]/20 to-[#FFD4C4]/20 backdrop-blur-sm rounded-2xl overflow-hidden border border-[#FFCCBC]/30 hover:border-[#FFCCBC]/60 transition-all duration-300 group hover:scale-[1.02]">
       {/* Album Art Section */}
       <div className="relative p-4 pb-3">
-        <div className="w-full aspect-square rounded-xl relative overflow-hidden bg-gradient-to-br from-accent-pink/20 to-accent-purple/20">
+        <div className="w-full aspect-square rounded-xl relative overflow-hidden bg-gradient-to-br from-[#FFE5D9]/30 to-[#FFD4C4]/30">
           {loading ? (
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-pink"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FFB4A2]"></div>
             </div>
           ) : albumCover ? (
             <Image
@@ -169,10 +169,10 @@ export function MusicPlayer({
             onClick={handleProgressClick}
           >
             <div 
-              className="h-full bg-gradient-to-r from-primary to-accent-pink rounded-full relative transition-all duration-100"
+              className="h-full bg-gradient-to-r from-[#FFB4A2] to-[#FFDDC1] rounded-full relative transition-all duration-100"
               style={{ width: `${progress}%` }}
             >
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-primary rounded-full shadow-lg opacity-0 group-hover/progress:opacity-100 transition-opacity" />
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-[#FFB4A2] rounded-full shadow-lg opacity-0 group-hover/progress:opacity-100 transition-opacity" />
             </div>
           </div>
           {/* Time Display */}
@@ -188,7 +188,7 @@ export function MusicPlayer({
         <div className="flex items-center justify-center gap-2">
           {/* Repeat */}
           <button 
-            className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-primary transition-colors disabled:opacity-30"
+            className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-[#FF9E80] transition-colors disabled:opacity-30"
             disabled={!previewUrl}
             aria-label="Repeat"
           >
@@ -200,7 +200,7 @@ export function MusicPlayer({
           {/* Skip Back */}
           <button 
             onClick={handleSkipBack}
-            className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-primary transition-colors disabled:opacity-30"
+            className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-[#FF9E80] transition-colors disabled:opacity-30"
             disabled={!previewUrl}
             aria-label="Skip back"
           >
@@ -212,7 +212,7 @@ export function MusicPlayer({
           {/* Play/Pause */}
           <button 
             onClick={togglePlay}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-primary hover:bg-primary/90 text-primary-foreground transition-all hover:scale-105 disabled:opacity-30 disabled:hover:scale-100"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-[#FFB4A2] to-[#FF9E80] hover:from-[#FF9E80] hover:to-[#FFB4A2] text-white transition-all hover:scale-105 disabled:opacity-30 disabled:hover:scale-100"
             disabled={!previewUrl}
             aria-label={isPlaying ? 'Pause' : 'Play'}
           >
@@ -230,7 +230,7 @@ export function MusicPlayer({
           {/* Skip Forward */}
           <button 
             onClick={handleSkipForward}
-            className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-primary transition-colors disabled:opacity-30"
+            className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-[#FF9E80] transition-colors disabled:opacity-30"
             disabled={!previewUrl}
             aria-label="Skip forward"
           >
@@ -241,7 +241,7 @@ export function MusicPlayer({
 
           {/* Shuffle */}
           <button 
-            className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-primary transition-colors disabled:opacity-30"
+            className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-[#FF9E80] transition-colors disabled:opacity-30"
             disabled={!previewUrl}
             aria-label="Shuffle"
           >
