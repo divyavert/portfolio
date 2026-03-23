@@ -1,21 +1,51 @@
+import { Navigation } from "@/components/layout/Navigation";
+import { Footer } from "@/components/layout/Footer";
+import { Hero } from "@/components/sections/Hero";
+
 export default function HomePage() {
   return (
-    <main className="min-h-screen">
-      <div className="container mx-auto px-4 py-20">
-        <h1 className="text-6xl font-heading font-black text-primary mb-4">
-          Divya Panchori
-        </h1>
-        <p className="text-2xl text-muted mb-8">
-          Software Engineer | Portfolio Coming Soon
-        </p>
-        <div className="space-y-4 text-foreground">
-          <p>✅ Project structure initialized</p>
-          <p>✅ Next.js 14 with TypeScript</p>
-          <p>✅ Tailwind CSS configured</p>
-          <p>✅ Custom fonts loaded (Space Grotesk, Inter, JetBrains Mono)</p>
-          <p>🚀 Building your portfolio...</p>
-        </div>
-      </div>
-    </main>
+    <>
+      <Navigation />
+      <main className="min-h-screen">
+        <Hero />
+        
+        {/* Placeholder sections */}
+        <section id="terminal" className="min-h-screen flex items-center justify-center bg-card/50">
+          <div className="text-center">
+            <h2 className="text-4xl font-heading font-bold mb-4">Terminal Section</h2>
+            <p className="text-muted">Coming soon...</p>
+          </div>
+        </section>
+
+        <section id="projects" className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-4xl font-heading font-bold mb-4">Projects</h2>
+            <p className="text-muted">Coming soon...</p>
+          </div>
+        </section>
+
+        <section id="skills" className="min-h-screen flex items-center justify-center bg-card/50">
+          <div className="text-center">
+            <h2 className="text-4xl font-heading font-bold mb-4">Skills</h2>
+            <p className="text-muted">Coming soon...</p>
+          </div>
+        </section>
+
+        <section id="experience" className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-4xl font-heading font-bold mb-4">Experience</h2>
+            <p className="text-muted">Coming soon...</p>
+          </div>
+        </section>
+
+        <section id="contact" className="min-h-screen flex items-center justify-center bg-card/50">
+          <div className="text-center">
+            <h2 className="text-4xl font-heading font-bold mb-4">Contact</h2>
+            <p className="text-muted">Coming soon...</p>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
   );
 }

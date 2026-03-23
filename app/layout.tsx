@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import { Providers } from "@/components/providers/Providers";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -65,7 +66,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="preload">
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

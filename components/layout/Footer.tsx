@@ -1,0 +1,108 @@
+"use client";
+
+import { Github, Linkedin, Twitter, Instagram, Download } from "lucide-react";
+
+const socialLinks = [
+  {
+    name: "GitHub",
+    icon: Github,
+    href: "https://github.com/divyavert",
+  },
+  {
+    name: "LinkedIn",
+    icon: Linkedin,
+    href: "https://linkedin.com/in/divya-panchori",
+  },
+  {
+    name: "Twitter",
+    icon: Twitter,
+    href: "https://twitter.com",
+  },
+  {
+    name: "Instagram",
+    icon: Instagram,
+    href: "https://instagram.com",
+  },
+];
+
+const quickLinks = [
+  { name: "Home", href: "#home" },
+  { name: "Projects", href: "#projects" },
+  { name: "Skills", href: "#skills" },
+  { name: "Experience", href: "#experience" },
+  { name: "Blog", href: "/blog" },
+  { name: "Contact", href: "#contact" },
+];
+
+export function Footer() {
+  return (
+    <footer className="bg-card border-t border-border">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+          {/* Brand */}
+          <div>
+            <h3 className="text-xl font-heading font-bold mb-2">
+              Divya Panchori
+            </h3>
+            <p className="text-muted mb-2">Software Engineer</p>
+            <p className="text-sm text-muted-foreground">
+              Built with Next.js & lots of ☕
+            </p>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h4 className="font-heading font-semibold mb-4">Quick Links</h4>
+            <ul className="space-y-2">
+              {quickLinks.map((link) => (
+                <li key={link.name}>
+                  <a
+                    href={link.href}
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    {link.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Connect */}
+          <div>
+            <h4 className="font-heading font-semibold mb-4">Connect</h4>
+            <div className="flex gap-4 mb-4">
+              {socialLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary hover:text-primary-foreground flex items-center justify-center transition-colors"
+                    title={link.name}
+                  >
+                    <Icon className="w-5 h-5" />
+                  </a>
+                );
+              })}
+            </div>
+            <a
+              href="/resume.pdf"
+              download
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
+              <Download className="w-4 h-4" />
+              Download Resume
+            </a>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="pt-8 border-t border-border text-center text-sm text-muted-foreground">
+          <p>© {new Date().getFullYear()} Divya Panchori. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  );
+}

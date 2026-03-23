@@ -35,3 +35,7 @@ next-env.d.ts
 
 # sanity
 /sanity/dist
+
+# documentation (keep local only)
+*.md
+!README.md
