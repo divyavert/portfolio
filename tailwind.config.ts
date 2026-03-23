@@ -14,6 +14,7 @@ const config: Config = {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+          hover: "hsl(var(--card-hover))",
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",
@@ -43,6 +44,9 @@ const config: Config = {
         heading: ["var(--font-heading)", "sans-serif"],
         body: ["var(--font-body)", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
+      },
+      animation: {
+        'spin-slow': 'spin 3s linear infinite',
       },
     },
   },

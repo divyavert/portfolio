@@ -8,8 +8,9 @@
     --background: 10 10 10; /* #0a0a0a */
     --foreground: 0 0 100; /* #ffffff */
     
-    --card: 0 0 100; /* #ffffff */
-    --card-foreground: 10 10 10; /* #1a1a1a */
+    --card: 0 0 10; /* #1a1a1a */
+    --card-foreground: 0 0 100; /* #ffffff */
+    --card-hover: 0 0 13; /* #212121 */
     
     --primary: 16 71 59; /* #e67e4d */
     --primary-foreground: 0 0 100; /* #ffffff */
@@ -61,4 +62,18 @@ html {
 /* Remove transitions on page load */
 .preload * {
   transition: none !important;
+}
+
+/* Custom animations */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
 }
