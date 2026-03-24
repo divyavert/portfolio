@@ -31,7 +31,6 @@ export default {
       title: 'Excerpt',
       type: 'text',
       rows: 3,
-      validation: (Rule: any) => Rule.required().max(200),
     },
     {
       name: 'mainImage',
@@ -184,7 +183,9 @@ export default {
     },
     prepare(selection: any) {
       const { author, publishedAt } = selection;
-      const date = publishedAt ? new Date(publishedAt).toLocaleDateString() : 'No date';
+      const date = publishedAt
+        ? new Date(publishedAt).toLocaleDateString()
+        : 'No date';
       return {
         ...selection,
         subtitle: `${author ? `by ${author}` : 'No author'} | ${date}`,

@@ -9,6 +9,7 @@ import { getMoviePoster } from '@/lib/api/tmdb';
 import type { CurrentlyLoving, RecentlyWatched, BlogPost, PersonalInfo } from '@/lib/sanity/types';
 import { urlFor } from '@/lib/sanity/image';
 import { MusicPlayer } from '@/components/MusicPlayer';
+import { FootballMatchCard } from '@/components/FootballMatchCard';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -166,31 +167,67 @@ export default function Currently({
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
         >
           {/* Latest Blog Post - Large Card */}
-          <div className="currently-card md:col-span-2 lg:col-span-2 bg-gradient-to-br from-primary/10 to-accent-purple/10 backdrop-blur-sm rounded-2xl p-6 border border-primary/20 hover:border-primary/50 transition-all duration-300 group hover:scale-[1.02]">
-            <div className="flex items-start gap-3 mb-4">
-              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-                <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">Latest Blog Post</h3>
-                <p className="text-xl font-heading font-bold group-hover:text-primary transition-colors">
-                  Building a Modern Portfolio
-                </p>
+          {latestBlogPost && (
+            <div className="currently-card md:col-span-2 lg:col-span-2 bg-gradient-to-br from-primary/20 to-accent-purple/20 backdrop-blur-sm rounded-2xl overflow-hidden border border-primary/20 hover:border-primary/50 transition-all duration-300 group hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/10">
+              <div className="flex flex-col md:flex-row h-full">
+                {/* Featured Image */}
+                {latestBlogPost.mainImage && (
+                  <div className="relative w-full md:w-2/5 h-48 md:h-auto overflow-hidden">
+                    <Image
+                      src={urlFor(latestBlogPost.mainImage).width(600).height(400).url()}
+                      alt={latestBlogPost.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent to-primary/10" />
+                  </div>
+                )}
+                
+                {/* Content */}
+                <div className="flex-1 p-6 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-sm font-medium text-foreground mb-1">Latest Blog Post</h3>
+                        <p className="text-xl font-heading font-bold group-hover:text-primary transition-colors leading-tight">
+                          {latestBlogPost.title}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
+                      {latestBlogPost.excerpt}
+                    </p>
+                  </div>
+                  
+                  <div className="flex items-center justify-between pt-4 border-t border-primary/10">
+                    <span className="text-xs text-muted-foreground font-medium">
+                      {new Date(latestBlogPost.publishedAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </span>
+                    {latestBlogPost.readingTime && (
+                      <span className="text-xs text-muted-foreground">
+                        {latestBlogPost.readingTime} min read
+                      </span>
+                    )}
+                    <button className="text-sm text-primary hover:underline font-medium flex items-center gap-1">
+                      Read More
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-            <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-              Exploring the latest trends in web development and how to create an engaging portfolio
-              that stands out...
-            </p>
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">2 days ago</span>
-              <button className="text-sm text-primary hover:underline font-medium">
-                Read More →
-              </button>
-            </div>
-          </div>
+          )}
 
           {/* Currently Loving Music */}
           <div className="currently-card">
@@ -203,36 +240,8 @@ export default function Currently({
             />
           </div>
 
-          {/* Barcelona FC */}
-          <div className="currently-card bg-gradient-to-br from-[#004d98]/10 to-[#a50044]/10 backdrop-blur-sm rounded-2xl p-4 border border-primary/20 hover:border-[#a50044]/50 transition-all duration-300 group hover:scale-[1.02]">
-            <div className="flex items-start gap-3 mb-3">
-              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-[#004d98]/20 flex items-center justify-center">
-                <svg className="w-6 h-6 text-[#a50044]" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8.5 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm-.5 4.5c-1.657 0-3-.895-3-2h6c0 1.105-1.343 2-3 2z" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">Força Barça!</h3>
-              </div>
-            </div>
-
-            {/* Barcelona Badge */}
-            <div className="flex items-center justify-center mb-4">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#004d98] to-[#a50044] p-1">
-                <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
-                  <span className="text-2xl font-bold bg-gradient-to-br from-[#004d98] to-[#a50044] bg-clip-text text-transparent">
-                    FCB
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="text-center space-y-1">
-              <p className="text-xs text-muted-foreground">Next Match</p>
-              <p className="font-heading font-bold text-sm">Real Madrid</p>
-              <p className="text-xs text-muted-foreground">El Clásico • 3 days</p>
-            </div>
-          </div>
+          {/* Barcelona FC - Live Match Card */}
+          <FootballMatchCard />
 
           {/* Currently Learning */}
           <div className="currently-card bg-gradient-to-br from-accent-green/10 to-accent-blue/10 backdrop-blur-sm rounded-2xl p-4 border border-primary/20 hover:border-primary/50 transition-all duration-300 group hover:scale-[1.02]">
@@ -243,7 +252,7 @@ export default function Currently({
                 </svg>
               </div>
               <div>
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">Currently Learning</h3>
+                <h3 className="text-sm font-medium text-foreground mb-1">Currently Learning</h3>
               </div>
             </div>
 
@@ -279,7 +288,7 @@ export default function Currently({
                 </svg>
               </div>
               <div className="flex-1">
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">Recently Watched</h3>
+                <h3 className="text-sm font-medium text-foreground mb-1">Recently Watched</h3>
               </div>
             </div>
 

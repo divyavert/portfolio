@@ -12,7 +12,8 @@
     "sanity:deploy": "sanity deploy",
     "sanity:clear": "npx tsx scripts/clear-sanity.ts",
     "sanity:import": "sanity dataset import scripts/seed-data.ndjson production --replace",
-    "sanity:reset": "npm run sanity:clear && npm run sanity:import"
+    "sanity:reset": "npm run sanity:clear && npm run sanity:import",
+    "sanity:add-blog": "npx tsx scripts/add-blog.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
