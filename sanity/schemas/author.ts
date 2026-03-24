@@ -1,17 +1,15 @@
-import { defineType, defineField } from 'sanity';
-
-export default defineType({
+export default {
   name: 'author',
   title: 'Author',
   type: 'document',
   fields: [
-    defineField({
+    {
       name: 'name',
       title: 'Name',
       type: 'string',
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
       name: 'slug',
       title: 'Slug',
       type: 'slug',
@@ -19,9 +17,9 @@ export default defineType({
         source: 'name',
         maxLength: 96,
       },
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
       name: 'image',
       title: 'Image',
       type: 'image',
@@ -33,11 +31,11 @@ export default defineType({
           name: 'alt',
           type: 'string',
           title: 'Alternative Text',
-          validation: (Rule) => Rule.required(),
+          validation: (Rule: any) => Rule.required(),
         },
       ],
-    }),
-    defineField({
+    },
+    {
       name: 'bio',
       title: 'Bio',
       type: 'array',
@@ -53,14 +51,14 @@ export default defineType({
           },
         },
       ],
-    }),
-    defineField({
+    },
+    {
       name: 'role',
       title: 'Role',
       type: 'string',
       description: 'e.g., Software Engineer, Technical Writer',
-    }),
-    defineField({
+    },
+    {
       name: 'social',
       title: 'Social Links',
       type: 'object',
@@ -86,7 +84,7 @@ export default defineType({
           type: 'url',
         },
       ],
-    }),
+    },
   ],
   preview: {
     select: {
@@ -95,4 +93,4 @@ export default defineType({
       subtitle: 'role',
     },
   },
-});
+};

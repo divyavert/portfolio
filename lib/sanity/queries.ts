@@ -101,17 +101,17 @@ export const allExperienceQuery = groq`
   *[_type == "experience"] | order(startDate desc) {
     _id,
     company,
-    position,
+    "position": role,
     location,
     startDate,
     endDate,
-    current,
+    "current": isCurrent,
     description,
-    responsibilities,
-    technologies,
+    "technologies": techStack,
     achievements,
     companyLogo,
-    companyUrl
+    companyUrl,
+    order
   }
 `;
 

@@ -1,17 +1,15 @@
-import { defineType, defineField } from 'sanity';
-
-export default defineType({
+export default {
   name: 'recentlyWatched',
   title: 'Recently Watched',
   type: 'document',
   fields: [
-    defineField({
+    {
       name: 'title',
       title: 'Title',
       type: 'string',
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
       name: 'type',
       title: 'Type',
       type: 'string',
@@ -21,22 +19,22 @@ export default defineType({
           { title: 'TV Show', value: 'show' },
         ],
       },
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
       name: 'year',
       title: 'Year',
       type: 'number',
       description: 'Release year',
-    }),
-    defineField({
+    },
+    {
       name: 'rating',
       title: 'Your Rating',
       type: 'number',
       description: 'Rate out of 5',
-      validation: (Rule) => Rule.min(1).max(5),
-    }),
-    defineField({
+      validation: (Rule: any) => Rule.min(1).max(5),
+    },
+    {
       name: 'poster',
       title: 'Poster Image',
       type: 'image',
@@ -44,33 +42,33 @@ export default defineType({
       options: {
         hotspot: true,
       },
-    }),
-    defineField({
+    },
+    {
       name: 'genre',
       title: 'Genre',
       type: 'string',
       description: 'e.g., Action, Drama, Comedy',
-    }),
-    defineField({
+    },
+    {
       name: 'thoughts',
       title: 'Quick Thoughts (Optional)',
       type: 'text',
       rows: 2,
       description: 'Brief review or comment',
-    }),
-    defineField({
+    },
+    {
       name: 'watchedDate',
       title: 'Watched Date',
       type: 'date',
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
       name: 'active',
       title: 'Active',
       type: 'boolean',
       description: 'Show on Currently section',
       initialValue: true,
-    }),
+    },
   ],
   preview: {
     select: {
@@ -78,7 +76,7 @@ export default defineType({
       subtitle: 'type',
       media: 'poster',
     },
-    prepare(selection) {
+    prepare(selection: any) {
       const { title, subtitle } = selection;
       return {
         ...selection,
@@ -86,4 +84,4 @@ export default defineType({
       };
     },
   },
-});
+};

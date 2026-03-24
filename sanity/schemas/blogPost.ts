@@ -1,17 +1,15 @@
-import { defineType, defineField } from 'sanity';
-
-export default defineType({
+export default {
   name: 'blogPost',
   title: 'Blog Post',
   type: 'document',
   fields: [
-    defineField({
+    {
       name: 'title',
       title: 'Title',
       type: 'string',
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
       name: 'slug',
       title: 'Slug',
       type: 'slug',
@@ -19,23 +17,23 @@ export default defineType({
         source: 'title',
         maxLength: 96,
       },
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
       name: 'author',
       title: 'Author',
       type: 'reference',
       to: [{ type: 'author' }],
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
       name: 'excerpt',
       title: 'Excerpt',
       type: 'text',
       rows: 3,
-      validation: (Rule) => Rule.required().max(200),
-    }),
-    defineField({
+      validation: (Rule: any) => Rule.required().max(200),
+    },
+    {
       name: 'mainImage',
       title: 'Main Image',
       type: 'image',
@@ -47,11 +45,11 @@ export default defineType({
           name: 'alt',
           type: 'string',
           title: 'Alternative Text',
-          validation: (Rule) => Rule.required(),
+          validation: (Rule: any) => Rule.required(),
         },
       ],
-    }),
-    defineField({
+    },
+    {
       name: 'categories',
       title: 'Categories',
       type: 'array',
@@ -59,8 +57,8 @@ export default defineType({
       options: {
         layout: 'tags',
       },
-    }),
-    defineField({
+    },
+    {
       name: 'tags',
       title: 'Tags',
       type: 'array',
@@ -68,14 +66,14 @@ export default defineType({
       options: {
         layout: 'tags',
       },
-    }),
-    defineField({
+    },
+    {
       name: 'publishedAt',
       title: 'Published At',
       type: 'datetime',
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
       name: 'body',
       title: 'Body',
       type: 'array',
@@ -124,7 +122,7 @@ export default defineType({
               name: 'alt',
               type: 'string',
               title: 'Alternative Text',
-              validation: (Rule) => Rule.required(),
+              validation: (Rule: any) => Rule.required(),
             },
             {
               name: 'caption',
@@ -133,43 +131,22 @@ export default defineType({
             },
           ],
         },
-        {
-          type: 'code',
-          options: {
-            language: 'javascript',
-            languageAlternatives: [
-              { title: 'JavaScript', value: 'javascript' },
-              { title: 'TypeScript', value: 'typescript' },
-              { title: 'React JSX', value: 'jsx' },
-              { title: 'React TSX', value: 'tsx' },
-              { title: 'HTML', value: 'html' },
-              { title: 'CSS', value: 'css' },
-              { title: 'SCSS', value: 'scss' },
-              { title: 'Python', value: 'python' },
-              { title: 'Java', value: 'java' },
-              { title: 'JSON', value: 'json' },
-              { title: 'Bash', value: 'bash' },
-              { title: 'SQL', value: 'sql' },
-            ],
-            withFilename: true,
-          },
-        },
       ],
-    }),
-    defineField({
+    },
+    {
       name: 'readingTime',
       title: 'Reading Time (minutes)',
       type: 'number',
       description: 'Estimated reading time in minutes',
-    }),
-    defineField({
+    },
+    {
       name: 'featured',
       title: 'Featured Post',
       type: 'boolean',
       description: 'Mark this post as featured',
       initialValue: false,
-    }),
-    defineField({
+    },
+    {
       name: 'seo',
       title: 'SEO',
       type: 'object',
@@ -178,14 +155,14 @@ export default defineType({
           name: 'metaTitle',
           title: 'Meta Title',
           type: 'string',
-          validation: (Rule) => Rule.max(60),
+          validation: (Rule: any) => Rule.max(60),
         },
         {
           name: 'metaDescription',
           title: 'Meta Description',
           type: 'text',
           rows: 3,
-          validation: (Rule) => Rule.max(160),
+          validation: (Rule: any) => Rule.max(160),
         },
         {
           name: 'ogImage',
@@ -196,7 +173,7 @@ export default defineType({
           },
         },
       ],
-    }),
+    },
   ],
   preview: {
     select: {
@@ -205,7 +182,7 @@ export default defineType({
       media: 'mainImage',
       publishedAt: 'publishedAt',
     },
-    prepare(selection) {
+    prepare(selection: any) {
       const { author, publishedAt } = selection;
       const date = publishedAt ? new Date(publishedAt).toLocaleDateString() : 'No date';
       return {
@@ -214,4 +191,4 @@ export default defineType({
       };
     },
   },
-});
+};

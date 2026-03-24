@@ -189,12 +189,14 @@ export default function Experience({ experiences: sanityExperiences }: Experienc
                             </h3>
                             <p className="text-primary font-medium">{exp.company}</p>
                           </div>
-                          <div className={`flex items-center gap-2 text-sm text-muted-foreground ${isLeft ? '' : 'md:order-1'}`}>
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                            </svg>
-                            {exp.location}
-                          </div>
+                          {exp.location && (
+                            <div className={`flex items-center gap-2 text-sm text-muted-foreground ${isLeft ? '' : 'md:order-1'}`}>
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                              </svg>
+                              {exp.location}
+                            </div>
+                          )}
                         </div>
                         <div className="flex items-center gap-2 text-sm font-mono text-muted-foreground">
                           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -210,38 +212,25 @@ export default function Experience({ experiences: sanityExperiences }: Experienc
                       </div>
 
                       {/* Description */}
-                      <p className="text-muted-foreground mb-4 leading-relaxed">
+                      <p className="text-muted-foreground mb-4 leading-relaxed whitespace-pre-line">
                         {exp.description}
                       </p>
 
-                      {/* Key Responsibilities */}
-                      <div className="mb-4">
-                        <h4 className="text-sm font-heading font-bold mb-2 text-foreground">
-                          Key Responsibilities:
-                        </h4>
-                        <ul className="space-y-1 text-sm text-muted-foreground">
-                          {exp.responsibilities.slice(0, 3).map((resp, idx) => (
-                            <li key={idx} className="flex items-start gap-2">
-                              <span className="text-primary mt-1">•</span>
-                              <span>{resp}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
                       {/* Technologies */}
-                      <div className="mb-4">
-                        <div className="flex flex-wrap gap-2">
-                          {exp.technologies.map((tech) => (
-                            <span
-                              key={tech}
-                              className="px-3 py-1 bg-background/50 backdrop-blur-sm rounded-full text-xs font-mono border border-primary/20"
-                            >
-                              {tech}
-                            </span>
-                          ))}
+                      {exp.technologies && exp.technologies.length > 0 && (
+                        <div className="mb-4">
+                          <div className="flex flex-wrap gap-2">
+                            {exp.technologies.map((tech) => (
+                              <span
+                                key={tech}
+                                className="px-3 py-1 bg-background/50 backdrop-blur-sm rounded-full text-xs font-mono border border-primary/20"
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
                         </div>
-                      </div>
+                      )}
 
                       {/* Achievements */}
                       {exp.achievements && exp.achievements.length > 0 && (
