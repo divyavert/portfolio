@@ -1,7 +1,21 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import { Space_Grotesk, Inter, JetBrains_Mono, Epilogue, Manrope } from "next/font/google";
 import { Providers } from "@/components/providers/Providers";
 import "./globals.css";
+
+const epilogue = Epilogue({
+  subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["600", "700", "800"],
+  display: "swap",
+});
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-body",
+  weight: ["400", "500", "600"],
+  display: "swap",
+});
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -12,7 +26,7 @@ const spaceGrotesk = Space_Grotesk({
 
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-body",
+  variable: "--font-label",
   weight: ["400", "500", "600"],
   display: "swap",
 });
@@ -62,7 +76,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${epilogue.variable} ${manrope.variable} ${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
       <body className="preload">

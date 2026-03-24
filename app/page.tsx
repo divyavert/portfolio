@@ -7,7 +7,8 @@ import {
   allExperienceQuery,
   currentlyLovingQuery,
   recentlyWatchedQuery,
-  latestBlogPostQuery
+  latestBlogPostQuery,
+  skillSprintQuery
 } from "@/lib/sanity/queries";
 
 export const revalidate = 60; // Revalidate every 60 seconds
@@ -21,7 +22,8 @@ async function getData() {
       experiences,
       currentlyLoving,
       recentlyWatched,
-      latestBlogPost
+      latestBlogPost,
+      skillSprint
     ] = await Promise.all([
       client.fetch(personalInfoQuery),
       client.fetch(allProjectsQuery),
@@ -29,7 +31,8 @@ async function getData() {
       client.fetch(allExperienceQuery),
       client.fetch(currentlyLovingQuery),
       client.fetch(recentlyWatchedQuery),
-      client.fetch(latestBlogPostQuery)
+      client.fetch(latestBlogPostQuery),
+      client.fetch(skillSprintQuery)
     ]);
 
     return {
@@ -39,7 +42,8 @@ async function getData() {
       experiences,
       currentlyLoving,
       recentlyWatched,
-      latestBlogPost
+      latestBlogPost,
+      skillSprint
     };
   } catch (error) {
     console.error('Error fetching data from Sanity:', error);
@@ -51,7 +55,8 @@ async function getData() {
       experiences: [],
       currentlyLoving: null,
       recentlyWatched: null,
-      latestBlogPost: null
+      latestBlogPost: null,
+      skillSprint: null
     };
   }
 }
@@ -68,6 +73,7 @@ export default async function Page() {
       currentlyLoving={data.currentlyLoving}
       recentlyWatched={data.recentlyWatched}
       latestBlogPost={data.latestBlogPost}
+      skillSprint={data.skillSprint}
     />
   );
 }

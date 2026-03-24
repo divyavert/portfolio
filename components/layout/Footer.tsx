@@ -36,29 +36,29 @@ const quickLinks = [
 
 export function Footer() {
   return (
-    <footer className="bg-card border-t border-border">
+    <footer className="bg-surface-container">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           {/* Brand */}
           <div>
-            <h3 className="text-xl font-heading font-bold mb-2">
+            <h3 className="text-xl font-display font-bold mb-2">
               Divya Panchori
             </h3>
-            <p className="text-muted mb-2">Software Engineer</p>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground mb-2 font-body">Software Engineer</p>
+            <p className="text-sm text-muted-foreground font-body">
               Built with Next.js & lots of ☕
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-heading font-semibold mb-4">Quick Links</h4>
+            <h4 className="font-label text-xs uppercase tracking-wider mb-4">Quick Links</h4>
             <ul className="space-y-2">
               {quickLinks.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    className="text-muted-foreground hover:text-primary transition-colors"
+                    className="text-muted-foreground hover:text-primary transition-colors font-body"
                   >
                     {link.name}
                   </a>
@@ -69,7 +69,7 @@ export function Footer() {
 
           {/* Connect */}
           <div>
-            <h4 className="font-heading font-semibold mb-4">Connect</h4>
+            <h4 className="font-label text-xs uppercase tracking-wider mb-4">Connect</h4>
             <div className="flex gap-4 mb-4">
               {socialLinks.map((link) => {
                 const Icon = link.icon;
@@ -79,7 +79,7 @@ export function Footer() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary hover:text-primary-foreground flex items-center justify-center transition-colors"
+                    className="w-10 h-10 rounded-full bg-surface-bright hover:bg-primary hover:text-primary-foreground flex items-center justify-center transition-colors"
                     title={link.name}
                   >
                     <Icon className="w-5 h-5" />
@@ -90,7 +90,7 @@ export function Footer() {
             <a
               href="/resume.pdf"
               download
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors font-body"
             >
               <Download className="w-4 h-4" />
               Download Resume
@@ -99,7 +99,7 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-border text-center text-sm text-muted-foreground">
+        <div className="pt-8 outline outline-1 outline-border/15 text-center text-sm text-muted-foreground font-body">
           <p>© {new Date().getFullYear()} Divya Panchori. All rights reserved.</p>
         </div>
       </div>

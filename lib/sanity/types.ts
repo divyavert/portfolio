@@ -136,3 +136,11 @@ export interface RecentlyWatched {
   thoughts?: string;
   watchedDate: string;
 }
+
+export interface SkillSprint {
+  _id: string;
+  courseName: string;
+  progress: number;
+  upNextLesson?: string;
+  icon: string;
+}

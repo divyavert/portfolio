@@ -304,3 +304,14 @@ export const recentlyWatchedQuery = groq`
     watchedDate
   }
 `;
+
+// Skill Sprint Query
+export const skillSprintQuery = groq`
+  *[_type == "skillSprint" && active == true][0] {
+    _id,
+    courseName,
+    progress,
+    upNextLesson,
+    icon
+  }
+`;

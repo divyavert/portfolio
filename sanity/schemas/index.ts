@@ -6,6 +6,7 @@ import blogPost from './blogPost';
 import author from './author';
 import currentlyLoving from './currentlyLoving';
 import recentlyWatched from './recentlyWatched';
+import skillSprint from './skillSprint';
 
 export const schemaTypes = [
   personalInfo,
@@ -16,4 +17,5 @@ export const schemaTypes = [
   author,
   currentlyLoving,
   recentlyWatched,
+  skillSprint,
 ];

@@ -14,8 +14,20 @@ interface SkillsProps {
 // Fallback data
 const fallbackSkills: Skill[] = [
   { _id: '1', name: 'React', category: 'frontend', proficiency: 90, order: 1 },
-  { _id: '2', name: 'Next.js', category: 'frontend', proficiency: 85, order: 2 },
-  { _id: '3', name: 'TypeScript', category: 'frontend', proficiency: 88, order: 3 },
+  {
+    _id: '2',
+    name: 'Next.js',
+    category: 'frontend',
+    proficiency: 85,
+    order: 2,
+  },
+  {
+    _id: '3',
+    name: 'TypeScript',
+    category: 'frontend',
+    proficiency: 88,
+    order: 3,
+  },
   { _id: '4', name: 'Node.js', category: 'backend', proficiency: 80, order: 4 },
   { _id: '5', name: 'Python', category: 'backend', proficiency: 75, order: 5 },
   { _id: '6', name: 'Git', category: 'tools', proficiency: 88, order: 6 },
@@ -40,7 +52,8 @@ const colorGradients: Record<string, string> = {
 };
 
 export default function Skills({ skills: sanitySkills }: SkillsProps) {
-  const skillList = sanitySkills && sanitySkills.length > 0 ? sanitySkills : fallbackSkills;
+  const skillList =
+    sanitySkills && sanitySkills.length > 0 ? sanitySkills : fallbackSkills;
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const cloudRef = useRef<HTMLDivElement>(null);
@@ -97,121 +110,76 @@ export default function Skills({ skills: sanitySkills }: SkillsProps) {
 
   return (
     <section
-      id="skills"
+      id='skills'
       ref={sectionRef}
-      className="min-h-screen flex items-center justify-center px-4 py-20 bg-card/20"
+      className='min-h-screen flex items-center justify-center px-4 py-20 bg-surface-container-low'
     >
-      <div className="container mx-auto">
+      <div className='container mx-auto'>
         {/* Section Header */}
-        <div ref={titleRef} className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-heading font-bold mb-4">
-            Skills & <span className="text-primary">Technologies</span>
+        <div ref={titleRef} className='mb-12'>
+          <h2 className='text-6xl md:text-8xl font-display font-bold mb-2'>
+            Technical <span className='italic text-primary'>Arsenal</span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
-            A diverse toolkit of technologies and frameworks I've mastered throughout my journey.
-            Always learning, always growing.
+          <p className='text-primary text-xs tracking-widest font-label font-bold uppercase'>
+            SKILLS & EXPERTISE // TECH STACK
           </p>
-
-          {/* Category Legend */}
-          <div className="flex flex-wrap justify-center gap-6 mt-8">
-            {Object.entries(categories).map(([key, category]) => (
-              <div key={key} className="flex items-center gap-2">
-                <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${
-                  key === 'frontend' ? 'from-accent-blue to-accent-blue/50' :
-                  key === 'backend' ? 'from-accent-green to-accent-green/50' :
-                  key === 'devops' ? 'from-accent-purple to-accent-purple/50' :
-                  'from-primary to-primary/50'
-                }`}></div>
-                <span className={`text-sm font-medium ${category.color}`}>
-                  {category.name}
-                </span>
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* Skills Cloud */}
         <div
           ref={cloudRef}
-          className="relative max-w-5xl mx-auto min-h-[600px] flex items-center justify-center"
+          className='relative max-w-5xl mx-auto min-h-[600px] flex items-center justify-center'
         >
           {/* Background decorative circles */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-20">
-            <div className="w-64 h-64 rounded-full border border-primary/20"></div>
-            <div className="absolute w-96 h-96 rounded-full border border-primary/10"></div>
-            <div className="absolute w-[500px] h-[500px] rounded-full border border-primary/5"></div>
+          <div className='absolute inset-0 flex items-center justify-center opacity-20'>
+            <div className='w-64 h-64 rounded-full border border-primary/20'></div>
+            <div className='absolute w-96 h-96 rounded-full border border-primary/10'></div>
+            <div className='absolute w-[500px] h-[500px] rounded-full border border-primary/5'></div>
           </div>
 
           {/* Skills Badges - Arranged in a cloud pattern */}
-          <div className="relative flex flex-wrap justify-center items-center gap-3 p-8">
+          <div className='relative flex flex-wrap justify-center items-center gap-3 p-8'>
             {skillList.map((skill: Skill, index: number) => {
               // Randomize size based on proficiency
-              const sizeClass = 
-                skill.proficiency >= 85 ? 'text-lg px-6 py-3' :
-                skill.proficiency >= 75 ? 'text-base px-5 py-2.5' :
-                'text-sm px-4 py-2';
-              
-              const gradientColor = colorGradients[skill.category] || colorGradients.other;
+              const sizeClass =
+                skill.proficiency >= 85
+                  ? 'text-lg px-6 py-3'
+                  : skill.proficiency >= 75
+                    ? 'text-base px-5 py-2.5'
+                    : 'text-sm px-4 py-2';
+
+              const gradientColor =
+                colorGradients[skill.category] || colorGradients.other;
 
               return (
                 <div
                   key={skill._id}
-                  className={`skill-badge group relative ${sizeClass} font-medium rounded-full border border-primary/20 bg-card/80 backdrop-blur-sm hover:border-primary hover:scale-110 transition-all duration-300 cursor-pointer`}
+                  className={`skill-badge group relative ${sizeClass} font-body font-medium rounded-full bg-surface-container backdrop-blur-sm hover:bg-surface-container-high hover:scale-110 transition-all duration-300 cursor-pointer`}
                   style={{
                     // Add slight random positioning offset for more organic feel
-                    transform: `translateX(${(index % 3 - 1) * 5}px) translateY(${(index % 4 - 1.5) * 5}px)`,
+                    transform: `translateX(${((index % 3) - 1) * 5}px) translateY(${((index % 4) - 1.5) * 5}px)`,
                   }}
                 >
                   {/* Gradient background */}
-                  <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${skill.color} opacity-50 group-hover:opacity-100 transition-opacity`}></div>
-                  
+                  <div
+                    className={`absolute inset-0 rounded-full bg-gradient-to-br ${skill.color} opacity-50 group-hover:opacity-100 transition-opacity`}
+                  ></div>
+
                   {/* Content */}
-                  <div className="relative z-10 flex items-center gap-2">
+                  <div className='relative z-10 flex items-center gap-2'>
                     <span>{skill.name}</span>
-                    
+
                     {/* Proficiency indicator (shows on hover) */}
-                    <span className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-primary font-mono">
+                    <span className='opacity-0 group-hover:opacity-100 transition-opacity text-xs text-primary font-label'>
                       {skill.proficiency}%
                     </span>
                   </div>
 
                   {/* Glow effect on hover */}
-                  <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity blur-lg bg-primary/20"></div>
+                  <div className='absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity blur-lg bg-primary/20'></div>
                 </div>
               );
             })}
-          </div>
-        </div>
-
-        {/* Proficiency Scale */}
-        <div className="mt-16 max-w-2xl mx-auto">
-          <div className="bg-card/50 backdrop-blur-sm rounded-2xl p-6 border border-primary/20">
-            <h3 className="text-lg font-heading font-bold mb-4 text-center">
-              Proficiency Level Guide
-            </h3>
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="flex-shrink-0 w-24 text-sm text-muted-foreground">85-100%</div>
-                <div className="flex-1 h-2 rounded-full bg-accent-green/20">
-                  <div className="h-full w-[90%] rounded-full bg-gradient-to-r from-accent-green to-accent-blue"></div>
-                </div>
-                <div className="flex-shrink-0 w-20 text-sm font-medium text-accent-green">Expert</div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex-shrink-0 w-24 text-sm text-muted-foreground">75-84%</div>
-                <div className="flex-1 h-2 rounded-full bg-primary/20">
-                  <div className="h-full w-[70%] rounded-full bg-gradient-to-r from-primary to-accent-yellow"></div>
-                </div>
-                <div className="flex-shrink-0 w-20 text-sm font-medium text-primary">Advanced</div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex-shrink-0 w-24 text-sm text-muted-foreground">60-74%</div>
-                <div className="flex-1 h-2 rounded-full bg-accent-purple/20">
-                  <div className="h-full w-[50%] rounded-full bg-gradient-to-r from-accent-purple to-accent-pink"></div>
-                </div>
-                <div className="flex-shrink-0 w-20 text-sm font-medium text-accent-purple">Intermediate</div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

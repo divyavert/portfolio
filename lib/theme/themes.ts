@@ -9,6 +9,8 @@ export interface Theme {
     primaryForeground: string;
     secondary: string;
     secondaryForeground: string;
+    tertiary?: string;
+    tertiaryForeground?: string;
     accent: {
       purple: string;
       blue: string;
@@ -22,11 +24,23 @@ export interface Theme {
     destructive: string;
     success: string;
     warning: string;
+    // Surface hierarchy for Digital Pulse theme
+    surface?: {
+      base: string;
+      containerLow: string;
+      container: string;
+      containerHigh: string;
+      bright: string;
+      glass: string;
+      glassOpacity: string;
+    };
   };
   fonts: {
     heading: string;
     body: string;
     mono: string;
+    display?: string;
+    label?: string;
   };
 }
 
@@ -156,6 +170,51 @@ export const themes: Record<string, Theme> = {
       heading: "Space Grotesk",
       body: "Inter",
       mono: "JetBrains Mono",
+    },
+  },
+
+  digitalPulse: {
+    name: "Digital Pulse",
+    colors: {
+      background: "#0e0e11",
+      foreground: "#ffffff",
+      card: "#19191d",
+      cardForeground: "#ffffff",
+      primary: "#ff9069",
+      primaryForeground: "#ffffff",
+      secondary: "#00e3fd",
+      secondaryForeground: "#0e0e11",
+      tertiary: "#a58cff",
+      tertiaryForeground: "#ffffff",
+      accent: {
+        purple: "#a58cff",
+        blue: "#00e3fd",
+        pink: "#ff9069",
+        green: "#34d399",
+        yellow: "#fbbf24",
+      },
+      muted: "#a0a0a0",
+      mutedForeground: "#666666",
+      border: "rgba(72, 71, 75, 0.15)",
+      destructive: "#ef4444",
+      success: "#22c55e",
+      warning: "#f59e0b",
+      surface: {
+        base: "#0e0e11",
+        containerLow: "#131316",
+        container: "#19191d",
+        containerHigh: "#1f1f23",
+        bright: "#2c2c30",
+        glass: "#25252a",
+        glassOpacity: "0.6",
+      },
+    },
+    fonts: {
+      display: "Epilogue",
+      heading: "Epilogue",
+      body: "Manrope",
+      label: "Space Grotesk",
+      mono: "Space Grotesk",
     },
   },
 };

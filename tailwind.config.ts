@@ -24,6 +24,10 @@ const config: Config = {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
         },
+        tertiary: {
+          DEFAULT: "hsl(var(--tertiary))",
+          foreground: "hsl(var(--tertiary-foreground))",
+        },
         accent: {
           purple: "hsl(var(--accent-purple))",
           blue: "hsl(var(--accent-blue))",
@@ -39,11 +43,28 @@ const config: Config = {
         destructive: "hsl(var(--destructive))",
         success: "hsl(var(--success))",
         warning: "hsl(var(--warning))",
+        // Surface hierarchy
+        surface: {
+          base: "hsl(var(--surface-base))",
+          'container-low': "hsl(var(--surface-container-low))",
+          container: "hsl(var(--surface-container))",
+          'container-high': "hsl(var(--surface-container-high))",
+          bright: "hsl(var(--surface-bright))",
+          glass: "hsl(var(--surface-glass))",
+        },
       },
       fontFamily: {
+        display: ["var(--font-display)", "sans-serif"],
         heading: ["var(--font-heading)", "sans-serif"],
         body: ["var(--font-body)", "sans-serif"],
+        label: ["var(--font-label)", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
+      },
+      borderRadius: {
+        'xl': '1.5rem', // Digital Pulse roundedness-xl
+      },
+      backdropBlur: {
+        'glass': '24px', // For glassmorphism effect
       },
       animation: {
         'spin-slow': 'spin 3s linear infinite',
