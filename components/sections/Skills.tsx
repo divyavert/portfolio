@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { Skill } from '@/lib/sanity/types';
@@ -11,98 +11,386 @@ interface SkillsProps {
   skills: Skill[];
 }
 
-// Fallback data
-const fallbackSkills: Skill[] = [
-  { _id: '1', name: 'React', category: 'frontend', proficiency: 90, order: 1 },
-  {
-    _id: '2',
-    name: 'Next.js',
-    category: 'frontend',
-    proficiency: 85,
-    order: 2,
-  },
-  {
-    _id: '3',
-    name: 'TypeScript',
-    category: 'frontend',
-    proficiency: 88,
-    order: 3,
-  },
-  { _id: '4', name: 'Node.js', category: 'backend', proficiency: 80, order: 4 },
-  { _id: '5', name: 'Python', category: 'backend', proficiency: 75, order: 5 },
-  { _id: '6', name: 'Git', category: 'tools', proficiency: 88, order: 6 },
-  { _id: '7', name: 'Docker', category: 'devops', proficiency: 65, order: 7 },
-];
+const fallbackSkills = [
+  { _id: '1',  name: 'React',       category: 'frontend',  proficiency: 90, order: 1 },
+  { _id: '2',  name: 'Next.js',     category: 'frontend',  proficiency: 85, order: 2 },
+  { _id: '3',  name: 'TypeScript',  category: 'frontend',  proficiency: 88, order: 3 },
+  { _id: '4',  name: 'Tailwind CSS',category: 'frontend',  proficiency: 92, order: 4 },
+  { _id: '5',  name: 'Node.js',     category: 'backend',   proficiency: 80, order: 5 },
+  { _id: '6',  name: 'Python',      category: 'backend',   proficiency: 75, order: 6 },
+  { _id: '7',  name: 'PostgreSQL',  category: 'backend',   proficiency: 72, order: 7 },
+  { _id: '8',  name: 'REST APIs',   category: 'backend',   proficiency: 85, order: 8 },
+  { _id: '9',  name: 'Git',         category: 'tools',     proficiency: 88, order: 9 },
+  { _id: '10', name: 'Figma',       category: 'tools',     proficiency: 78, order: 10 },
+  { _id: '11', name: 'Docker',      category: 'devops',    proficiency: 65, order: 11 },
+  { _id: '12', name: 'JavaScript',  category: 'other',     proficiency: 90, order: 12 },
+] as Skill[];
 
-const categories = {
-  frontend: { name: 'Frontend', color: 'text-accent-blue' },
-  backend: { name: 'Backend', color: 'text-accent-green' },
-  devops: { name: 'DevOps', color: 'text-accent-purple' },
-  tools: { name: 'Tools', color: 'text-primary' },
-  other: { name: 'Other', color: 'text-muted-foreground' },
+// Simple Icons slug mapping — handles names that don't map 1:1
+const iconSlugMap: Record<string, string> = {
+  // Frameworks & Libraries
+  'react':          'react',
+  'react.js':       'react',
+  'next.js':        'nextdotjs',
+  'node.js':        'nodedotjs',
+  'vue':            'vuedotjs',
+  'vue.js':         'vuedotjs',
+  'svelte':         'svelte',
+  'express':        'express',
+  'express.js':     'express',
+  'fastapi':        'fastapi',
+  'django':         'django',
+  'flutter':        'flutter',
+  'prisma':         'prisma',
+  'react query':    'reactquery',
+  'framer motion':  'framer',
+  'framer':         'framer',
+  'zustand':        'zustand',
+  'material ui':    'mui',
+  'mui':            'mui',
+  
+  // Languages
+  'typescript':     'typescript',
+  'javascript':     'javascript',
+  'python':         'python',
+  'go':             'go',
+  'golang':         'go',
+  'go (golang)':    'go',
+  'c++':            'cplusplus',
+  'c#':             'csharp',
+  'java':           'java',
+  
+  // Styling
+  'tailwind css':   'tailwindcss',
+  'tailwind':       'tailwindcss',
+  'css':            'css3',
+  'html':           'html5',
+  'sass':           'sass',
+  'scss':           'sass',
+  
+  // Databases & Storage
+  'postgresql':     'postgresql',
+  'postgres':       'postgresql',
+  'mongodb':        'mongodb',
+  'mysql':          'mysql',
+  'redis':          'redis',
+  'supabase':       'supabase',
+  'chromadb':       'chromadb',
+  'firebase':       'firebase',
+  
+  // Cloud & DevOps
+  'aws':            'amazonwebservices',
+  'vercel':         'vercel',
+  'docker':         'docker',
+  'kubernetes':     'kubernetes',
+  'github actions': 'githubactions',
+  'ci/cd':          'githubactions',
+  
+  // Tools & CMS
+  'git':            'git',
+  'github':         'github',
+  'figma':          'figma',
+  'linux':          'linux',
+  'vscode':         'visualstudiocode',
+  'vs code':        'visualstudiocode',
+  'sanity':         'sanity',
+  'sanity cms':     'sanity',
+  
+  // APIs & Protocols
+  'rest apis':      'fastapi',
+  'rest':           'fastapi',
+  'graphql':        'graphql',
+  'websocket':      'socketdotio',
+  
+  // Concepts - using related/symbolic icons
+  'rag / llm integration': 'openai',           // AI/LLM related
+  'agile/scrum':    'jira',                    // Agile project management
+  'agile':          'jira',
+  'scrum':          'jira',
+  'system design':  'diagramsdotnet',          // Architecture/diagrams
+  'data structures & algorithms': 'leetcode',  // Coding/algorithms
+  'dsa':            'leetcode',
+  'oop':            'blueprint',               // Object-oriented programming
+  'object-oriented programming': 'blueprint',
 };
 
-// Color gradient mappings for skill badges
-const colorGradients: Record<string, string> = {
-  frontend: 'from-accent-blue/30 to-accent-blue/10',
-  backend: 'from-accent-green/30 to-accent-green/10',
-  devops: 'from-accent-purple/30 to-accent-purple/10',
-  tools: 'from-primary/30 to-primary/10',
-  other: 'from-muted/30 to-muted/10',
+function getIconSlug(name: string): string {
+  const lower = name.toLowerCase();
+  const mapped = iconSlugMap[lower];
+  
+  // If explicitly mapped to empty string, return empty (will use fallback)
+  if (mapped === '') return '';
+  
+  // If mapped, use that
+  if (mapped) return mapped;
+  
+  // Otherwise, clean the name: remove spaces, dots, parentheses, special chars
+  return lower
+    .replace(/\s+/g, '')
+    .replace(/\./g, 'dot')
+    .replace(/[()]/g, '')
+    .replace(/[\/&]/g, '');
+}
+
+const categoryConfig: Record<string, {
+  label: string;
+  accent: string;      // CSS var reference
+  glow: string;        // rgba for box-shadow
+  rgb: string;         // r,g,b for tint backgrounds
+}> = {
+  languages: { label: 'Languages',  accent: 'hsl(var(--accent-yellow))', glow: 'rgba(251,191,36,0.4)',   rgb: '251,191,36'  },
+  frontend:  { label: 'Frontend',   accent: 'hsl(var(--accent-blue))',   glow: 'rgba(0,227,253,0.4)',    rgb: '0,227,253'   },
+  backend:   { label: 'Backend',    accent: 'hsl(var(--accent-green))',  glow: 'rgba(52,211,153,0.4)',   rgb: '52,211,153'  },
+  tools:     { label: 'Tools',      accent: 'hsl(var(--primary))',       glow: 'rgba(255,144,105,0.4)',  rgb: '255,144,105' },
+  devops:    { label: 'DevOps',     accent: 'hsl(var(--accent-purple))', glow: 'rgba(165,140,255,0.4)',  rgb: '165,140,255' },
+  concepts:  { label: 'Concepts',   accent: 'hsl(var(--tertiary))',      glow: 'rgba(165,140,255,0.3)',  rgb: '165,140,255' },
+  other:     { label: 'Other',      accent: 'hsl(var(--muted-foreground))', glow: 'rgba(180,180,180,0.2)', rgb: '180,180,180' },
 };
+
+// Bento span pattern — cycles through sizes to create visual rhythm
+// 'wide' = col-span-2, 'tall' = row-span-2, 'big' = col+row span 2, 'normal' = 1x1
+type CardSize = 'wide' | 'tall' | 'big' | 'normal';
+const bentoPattern: CardSize[] = ['big', 'normal', 'normal', 'wide', 'normal', 'normal', 'tall', 'normal', 'normal', 'normal', 'wide', 'normal'];
+
+function SkillCard({
+  skill,
+  size,
+  index,
+}: {
+  skill: Skill;
+  size: CardSize;
+  index: number;
+}) {
+  const [imgError, setImgError] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const cat = categoryConfig[skill.category] ?? categoryConfig.other;
+  const slug = getIconSlug(skill.name);
+  
+  // Only try to load icon if slug exists
+  const coloredIconUrl = slug ? `https://cdn.simpleicons.org/${slug}` : '';
+  const whiteIconUrl = slug ? `https://cdn.simpleicons.org/${slug}/ffffff` : '';
+  const [iconUrl, setIconUrl] = useState(coloredIconUrl);
+
+  const isWide = size === 'wide' || size === 'big';
+  const isTall = size === 'tall' || size === 'big';
+
+  // Floating animation offset — each card floats at slightly different rhythm
+  const floatDelay = (index * 0.2) % 2;
+  const floatDuration = 3 + (index % 3) * 0.5; // 3s to 4.5s
+
+  useEffect(() => {
+    if (!cardRef.current) return;
+    
+    // Gentle floating animation
+    gsap.to(cardRef.current, {
+      y: '+=8',
+      duration: floatDuration,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      delay: floatDelay,
+    });
+  }, [floatDelay, floatDuration]);
+
+  const handleImageError = () => {
+    // Try white version if colored fails
+    if (iconUrl === coloredIconUrl && whiteIconUrl) {
+      setIconUrl(whiteIconUrl);
+    } else {
+      // Both failed, show fallback
+      setImgError(true);
+    }
+  };
+
+  // If no slug, skip icon loading entirely
+  const shouldShowIcon = !imgError && iconUrl;
+
+  return (
+    <div
+      ref={cardRef}
+      className="skill-card group relative overflow-hidden rounded-2xl cursor-default select-none"
+      style={{
+        gridColumn: isWide ? 'span 2' : 'span 1',
+        gridRow:    isTall ? 'span 2' : 'span 1',
+        background: `radial-gradient(ellipse at top left, rgba(${cat.rgb}, 0.15) 0%, hsl(var(--surface-container)) 50%)`,
+        border: `1px solid rgba(${cat.rgb}, 0.2)`,
+        boxShadow: `inset 0 1px 0 rgba(255,255,255,0.03), 0 2px 8px rgba(0,0,0,0.2)`,
+        transition: 'all 0.4s cubic-bezier(0.34,1.56,0.64,1)',
+        transformStyle: 'preserve-3d',
+        perspective: '1000px',
+      }}
+      onMouseMove={(e) => {
+        const el = e.currentTarget as HTMLElement;
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        // 3D tilt effect
+        const rotateX = ((y - centerY) / centerY) * -8;
+        const rotateY = ((x - centerX) / centerX) * 8;
+        
+        el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(12px) scale(1.03)`;
+        el.style.boxShadow = `
+          0 25px 70px ${cat.glow},
+          0 0 0 1px rgba(${cat.rgb},0.5),
+          inset 0 1px 0 rgba(255,255,255,0.1),
+          inset 0 0 40px rgba(${cat.rgb},0.1)
+        `;
+        el.style.borderColor = `rgba(${cat.rgb}, 0.6)`;
+      }}
+      onMouseLeave={(e) => {
+        const el = e.currentTarget as HTMLElement;
+        el.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px) scale(1)';
+        el.style.boxShadow = `inset 0 1px 0 rgba(255,255,255,0.03), 0 2px 8px rgba(0,0,0,0.2)`;
+        el.style.borderColor = `rgba(${cat.rgb}, 0.2)`;
+      }}
+    >
+      {/* Radial gradient overlay for depth */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: `radial-gradient(circle at 50% 0%, rgba(${cat.rgb},0.2) 0%, transparent 60%)`,
+          opacity: 0.4,
+        }}
+      />
+
+      {/* Animated gradient sphere on hover */}
+      <div
+        className="pointer-events-none absolute -top-16 -right-16 w-40 h-40 rounded-full opacity-0 group-hover:opacity-100 blur-3xl transition-opacity duration-700"
+        style={{ background: `radial-gradient(circle, rgba(${cat.rgb},0.4) 0%, transparent 70%)` }}
+      />
+
+      {/* Card content */}
+      <div className={`relative z-10 flex h-full w-full ${isTall ? 'flex-col items-center justify-center gap-5 p-6' : 'flex-col items-center justify-center gap-3 p-5'}`}>
+
+        {/* Logo container with glow */}
+        <div className="relative">
+          {/* Icon glow halo */}
+          <div
+            className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500"
+            style={{ background: `rgba(${cat.rgb}, 0.5)` }}
+          />
+          
+          {/* Logo or fallback */}
+          <div
+            className={`relative flex items-center justify-center rounded-xl transition-all duration-500 group-hover:scale-110 ${
+              isTall ? 'w-16 h-16' : isWide ? 'w-12 h-12' : 'w-11 h-11'
+            }`}
+            style={{
+              background: `linear-gradient(135deg, rgba(${cat.rgb}, 0.15), rgba(${cat.rgb}, 0.05))`,
+              boxShadow: `inset 0 1px 2px rgba(255,255,255,0.1), 0 4px 12px rgba(${cat.rgb}, 0.2)`,
+            }}
+          >
+            {shouldShowIcon ? (
+              <img
+                src={iconUrl}
+                alt={skill.name}
+                className={`${isTall ? 'w-9 h-9' : 'w-7 h-7'} transition-all duration-300 group-hover:scale-110 group-hover:drop-shadow-2xl`}
+                style={{
+                  objectFit: 'contain',
+                  filter: iconUrl.includes('/ffffff') 
+                    ? 'brightness(0) invert(1) drop-shadow(0 2px 8px rgba(255,255,255,0.2))' 
+                    : 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))',
+                }}
+                onError={handleImageError}
+              />
+            ) : (
+              <span
+                className={`font-display font-bold ${isTall ? 'text-2xl' : 'text-lg'}`}
+                style={{
+                  color: cat.accent,
+                  textShadow: `0 0 12px ${cat.glow}`,
+                }}
+              >
+                {skill.name.slice(0, 2).toUpperCase()}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Name */}
+        <div className="text-center">
+          <p
+            className={`font-body font-bold leading-tight transition-all duration-300 group-hover:text-white group-hover:scale-105 ${
+              isTall ? 'text-base' : isWide ? 'text-sm' : 'text-xs'
+            }`}
+            style={{
+              color: 'hsl(var(--foreground) / 0.85)',
+              textShadow: '0 1px 2px rgba(0,0,0,0.5)',
+            }}
+          >
+            {skill.name}
+          </p>
+
+          {/* Category tag — only on big/tall cards */}
+          {isTall && (
+            <p
+              className="text-[10px] font-label uppercase tracking-[0.25em] mt-2 opacity-70 group-hover:opacity-100 transition-opacity"
+              style={{
+                color: cat.accent,
+                textShadow: `0 0 8px ${cat.glow}`,
+              }}
+            >
+              {cat.label}
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Shine effect overlay */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{
+          background: 'linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.03) 50%, transparent 60%)',
+          backgroundSize: '200% 200%',
+        }}
+      />
+    </div>
+  );
+}
 
 export default function Skills({ skills: sanitySkills }: SkillsProps) {
-  const skillList =
-    sanitySkills && sanitySkills.length > 0 ? sanitySkills : fallbackSkills;
+  const skillList = sanitySkills && sanitySkills.length > 0 ? sanitySkills : fallbackSkills;
   const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const cloudRef = useRef<HTMLDivElement>(null);
+  const headerRef  = useRef<HTMLDivElement>(null);
+  const gridRef    = useRef<HTMLDivElement>(null);
+
+  // Normalize category + sort by order
+  const normalizedSkills = skillList
+    .map((s) => ({ ...s, category: categoryConfig[s.category] ? s.category : 'other' }))
+    .sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
+
+  const totalSkills = normalizedSkills.length;
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Title animation
-      gsap.from(titleRef.current, {
-        scrollTrigger: {
-          trigger: titleRef.current,
-          start: 'top 80%',
-        },
-        y: 50,
-        opacity: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-      });
+      // Header lines
+      gsap.fromTo(
+        headerRef.current?.querySelectorAll('.h-line') ?? [],
+        { y: 70, opacity: 0 },
+        {
+          scrollTrigger: { trigger: headerRef.current, start: 'top 88%' },
+          y: 0, opacity: 1,
+          duration: 1, stagger: 0.12, ease: 'power3.out',
+          immediateRender: false,
+        }
+      );
 
-      // Skills badges animation
-      const badges = cloudRef.current?.querySelectorAll('.skill-badge');
-      if (badges) {
-        gsap.from(badges, {
-          scrollTrigger: {
-            trigger: cloudRef.current,
-            start: 'top 70%',
-          },
-          scale: 0,
-          opacity: 0,
-          duration: 0.6,
-          stagger: 0.05,
-          ease: 'back.out(1.7)',
-        });
-
-        // Floating animation for each badge
-        badges.forEach((badge, index) => {
-          const randomDelay = Math.random() * 2;
-          const randomDuration = 2 + Math.random() * 2;
-          const randomY = -10 - Math.random() * 10;
-
-          gsap.to(badge, {
-            y: randomY,
-            duration: randomDuration,
-            repeat: -1,
-            yoyo: true,
-            ease: 'power1.inOut',
-            delay: randomDelay,
-          });
-        });
-      }
+      // Bento cards pop in
+      gsap.fromTo(
+        '.skill-card',
+        { scale: 0.85, opacity: 0, y: 20 },
+        {
+          scrollTrigger: { trigger: gridRef.current, start: 'top 80%' },
+          scale: 1, opacity: 1, y: 0,
+          duration: 0.55,
+          stagger: { amount: 0.7, from: 'start' },
+          ease: 'back.out(1.4)',
+          immediateRender: false,
+        }
+      );
     }, sectionRef);
 
     return () => ctx.revert();
@@ -110,77 +398,87 @@ export default function Skills({ skills: sanitySkills }: SkillsProps) {
 
   return (
     <section
-      id='skills'
+      id="skills"
       ref={sectionRef}
-      className='min-h-screen flex items-center justify-center px-4 py-20 bg-surface-container-low'
+      className="relative px-4 py-24 bg-surface-container-low overflow-hidden"
     >
-      <div className='container mx-auto'>
-        {/* Section Header */}
-        <div ref={titleRef} className='mb-12'>
-          <h2 className='text-6xl md:text-8xl font-display font-bold mb-2'>
-            Technical <span className='italic text-primary'>Arsenal</span>
+      {/* Noise texture */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.025]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          backgroundSize: '180px 180px',
+        }}
+      />
+
+      {/* Ambient glows */}
+      <div className="pointer-events-none absolute top-0 right-0 w-[600px] h-[500px] opacity-[0.07]"
+        style={{ background: 'radial-gradient(ellipse at 80% 10%, hsl(var(--accent-blue)) 0%, transparent 65%)' }} />
+      <div className="pointer-events-none absolute bottom-0 left-0 w-[500px] h-[400px] opacity-[0.07]"
+        style={{ background: 'radial-gradient(ellipse at 20% 90%, hsl(var(--primary)) 0%, transparent 65%)' }} />
+
+      <div className="container mx-auto max-w-6xl relative z-10">
+
+        {/* ── Header ── */}
+        <div ref={headerRef} className="mb-14">
+          <div className="h-line flex items-center gap-3 mb-5">
+            <div className="h-px w-12" style={{ background: 'hsl(var(--primary))' }} />
+            <span className="font-label text-[10px] tracking-[0.35em] uppercase font-bold"
+              style={{ color: 'hsl(var(--primary))' }}>
+              {totalSkills} technologies
+            </span>
+          </div>
+
+          <h2 className="font-display font-bold leading-[0.9] mb-4">
+            <span className="h-line block text-[clamp(3.5rem,10vw,7rem)]"
+              style={{ color: 'hsl(var(--foreground))' }}>
+              Technical
+            </span>
+            <span
+              className="h-line block text-[clamp(3.5rem,10vw,7rem)] italic"
+              style={{
+                WebkitTextStroke: '1.5px hsl(var(--primary))',
+                color: 'transparent',
+              }}
+            >
+              Arsenal
+            </span>
           </h2>
-          <p className='text-primary text-xs tracking-widest font-label font-bold uppercase'>
-            SKILLS & EXPERTISE // TECH STACK
+
+          <p className="h-line font-body text-sm max-w-sm leading-relaxed"
+            style={{ color: 'hsl(var(--muted-foreground))' }}>
+            The stack I reach for — languages, frameworks, tools, and concepts
+            I&apos;ve shipped real things with.
           </p>
         </div>
 
-        {/* Skills Cloud */}
+        {/* ── Bento Grid ── */}
         <div
-          ref={cloudRef}
-          className='relative max-w-5xl mx-auto min-h-[600px] flex items-center justify-center'
+          ref={gridRef}
+          className="grid gap-3"
+          style={{
+            gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+            gridAutoRows: '120px',
+          }}
         >
-          {/* Background decorative circles */}
-          <div className='absolute inset-0 flex items-center justify-center opacity-20'>
-            <div className='w-64 h-64 rounded-full border border-primary/20'></div>
-            <div className='absolute w-96 h-96 rounded-full border border-primary/10'></div>
-            <div className='absolute w-[500px] h-[500px] rounded-full border border-primary/5'></div>
-          </div>
+          {normalizedSkills.map((skill, i) => (
+            <SkillCard
+              key={skill._id}
+              skill={skill}
+              size={bentoPattern[i % bentoPattern.length]}
+              index={i}
+            />
+          ))}
+        </div>
 
-          {/* Skills Badges - Arranged in a cloud pattern */}
-          <div className='relative flex flex-wrap justify-center items-center gap-3 p-8'>
-            {skillList.map((skill: Skill, index: number) => {
-              // Randomize size based on proficiency
-              const sizeClass =
-                skill.proficiency >= 85
-                  ? 'text-lg px-6 py-3'
-                  : skill.proficiency >= 75
-                    ? 'text-base px-5 py-2.5'
-                    : 'text-sm px-4 py-2';
-
-              const gradientColor =
-                colorGradients[skill.category] || colorGradients.other;
-
-              return (
-                <div
-                  key={skill._id}
-                  className={`skill-badge group relative ${sizeClass} font-body font-medium rounded-full bg-surface-container backdrop-blur-sm hover:bg-surface-container-high hover:scale-110 transition-all duration-300 cursor-pointer`}
-                  style={{
-                    // Add slight random positioning offset for more organic feel
-                    transform: `translateX(${((index % 3) - 1) * 5}px) translateY(${((index % 4) - 1.5) * 5}px)`,
-                  }}
-                >
-                  {/* Gradient background */}
-                  <div
-                    className={`absolute inset-0 rounded-full bg-gradient-to-br ${skill.color} opacity-50 group-hover:opacity-100 transition-opacity`}
-                  ></div>
-
-                  {/* Content */}
-                  <div className='relative z-10 flex items-center gap-2'>
-                    <span>{skill.name}</span>
-
-                    {/* Proficiency indicator (shows on hover) */}
-                    <span className='opacity-0 group-hover:opacity-100 transition-opacity text-xs text-primary font-label'>
-                      {skill.proficiency}%
-                    </span>
-                  </div>
-
-                  {/* Glow effect on hover */}
-                  <div className='absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity blur-lg bg-primary/20'></div>
-                </div>
-              );
-            })}
-          </div>
+        {/* ── Footer rule ── */}
+        <div className="mt-16 flex items-center gap-4">
+          <div className="h-px flex-1 opacity-10" style={{ background: 'hsl(var(--foreground))' }} />
+          <span className="font-label text-[9px] tracking-[0.3em] uppercase opacity-30"
+            style={{ color: 'hsl(var(--foreground))' }}>
+            skills &amp; expertise
+          </span>
+          <div className="h-px flex-1 opacity-10" style={{ background: 'hsl(var(--foreground))' }} />
         </div>
       </div>
     </section>
