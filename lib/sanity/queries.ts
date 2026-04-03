@@ -19,31 +19,33 @@ export const personalInfoQuery = groq`
 
 // Projects Queries
 export const allProjectsQuery = groq`
-  *[_type == "project"] | order(order asc, startDate desc) {
+  *[_type == "project"] | order(order asc) {
     _id,
     title,
     slug,
+    "shortDescription": shortDescription,
     description,
-    longDescription,
-    image,
-    technologies,
+    thumbnail,
+    "technologies": techStack,
+    category,
     liveUrl,
     githubUrl,
     featured,
-    startDate,
-    endDate,
-    order
+    order,
+    status
   }
 `;
 
 export const featuredProjectsQuery = groq`
-  *[_type == "project" && featured == true] | order(order asc, startDate desc) {
+  *[_type == "project" && featured == true] | order(order asc) {
     _id,
     title,
     slug,
+    "shortDescription": shortDescription,
     description,
-    image,
-    technologies,
+    thumbnail,
+    "technologies": techStack,
+    category,
     liveUrl,
     githubUrl,
     featured
@@ -55,19 +57,15 @@ export const projectBySlugQuery = groq`
     _id,
     title,
     slug,
-    description,
-    longDescription,
-    image,
-    gallery,
-    technologies,
+    "description": shortDescription,
+    thumbnail,
+    "technologies": techStack,
+    category,
     liveUrl,
     githubUrl,
     featured,
-    startDate,
-    endDate,
     order,
-    challenges,
-    learnings
+    status
   }
 `;
 

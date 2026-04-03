@@ -36,19 +36,16 @@ export interface Project {
   slug: {
     current: string;
   };
-  description: string;
-  longDescription?: PortableTextBlock[];
-  image: SanityImageSource;
-  gallery?: SanityImageSource[];
-  technologies: string[];
+  shortDescription?: string;
+  description?: PortableTextBlock[];
+  thumbnail?: SanityImageSource;
+  technologies?: string[];
+  category?: 'fullstack' | 'frontend' | 'backend' | 'ai' | 'tools';
   liveUrl?: string;
   githubUrl?: string;
   featured: boolean;
-  startDate: string;
-  endDate?: string;
   order: number;
-  challenges?: string[];
-  learnings?: string[];
+  status?: 'in-progress' | 'completed' | 'archived';
 }
 
 export interface Skill {
