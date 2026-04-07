@@ -4,6 +4,8 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { Experience } from '@/lib/sanity/types';
+import { urlFor } from '@/lib/sanity/image';
+import Image from 'next/image';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -28,18 +30,36 @@ const fallbackExperiences: Experience[] = [
   },
 ];
 
-export default function Experience({ experiences: sanityExperiences }: ExperienceProps) {
-  const experienceList = sanityExperiences && sanityExperiences.length > 0 ? sanityExperiences : fallbackExperiences;
+// Pattern configurations for editorial layout
+const cardWidthPattern = ['75%', '60%', '70%', '65%'];
+const cardOffsetPattern = ['0', 'auto 0 0 auto', '0 0', 'auto'];
+
+export default function Experience({
+  experiences: sanityExperiences,
+}: ExperienceProps) {
+  const experienceList =
+    sanityExperiences && sanityExperiences.length > 0
+      ? sanityExperiences
+      : fallbackExperiences;
 
   const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
 
   const formatDate = (dateString: string | undefined, current: boolean) => {
     if (current) return 'Present';
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+    });
+  };
+
+  const getYear = (dateString: string | undefined) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.getFullYear().toString();
   };
 
   useEffect(() => {
@@ -56,49 +76,43 @@ export default function Experience({ experiences: sanityExperiences }: Experienc
         ease: 'power3.out',
       });
 
-      // Timeline path animation
-      const path = timelineRef.current?.querySelector('.timeline-path');
-      if (path) {
-        gsap.from(path, {
-          scrollTrigger: {
-            trigger: timelineRef.current,
-            start: 'top 70%',
-            end: 'bottom 30%',
-            scrub: 1,
-          },
-          strokeDashoffset: 1000,
-          ease: 'none',
-        });
-      }
-
-      // Experience cards animation
-      const cards = timelineRef.current?.querySelectorAll('.experience-card');
-      cards?.forEach((card, index) => {
-        gsap.from(card, {
-          scrollTrigger: {
-            trigger: card,
-            start: 'top 80%',
-          },
-          x: index % 2 === 0 ? -100 : 100,
-          opacity: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-        });
+      // Trail path animation - draw in
+      gsap.from('.trail-path', {
+        scrollTrigger: {
+          trigger: timelineRef.current,
+          start: 'top 75%',
+        },
+        strokeDashoffset: 1000,
+        opacity: 0,
+        duration: 1.5,
+        stagger: 0.3,
+        ease: 'power2.out',
       });
 
-      // Mountain peaks animation
-      const peaks = timelineRef.current?.querySelectorAll('.mountain-peak');
-      peaks?.forEach((peak) => {
-        gsap.from(peak, {
-          scrollTrigger: {
-            trigger: peak,
-            start: 'top 80%',
-          },
-          scale: 0,
-          opacity: 0,
-          duration: 0.6,
-          ease: 'back.out(1.7)',
-        });
+      // Experience cards - staggered cascade
+      gsap.from('.experience-card', {
+        scrollTrigger: {
+          trigger: timelineRef.current,
+          start: 'top 75%',
+        },
+        y: 80,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: 'power3.out',
+      });
+
+      // Year markers - fade and scale
+      gsap.from('.year-marker', {
+        scrollTrigger: {
+          trigger: timelineRef.current,
+          start: 'top 80%',
+        },
+        scale: 0.8,
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.15,
+        ease: 'back.out(1.2)',
       });
     }, sectionRef);
 
@@ -107,122 +121,230 @@ export default function Experience({ experiences: sanityExperiences }: Experienc
 
   return (
     <section
-      id="experience"
+      id='experience'
       ref={sectionRef}
-      className="min-h-screen flex items-center justify-center px-4 py-20"
+      className='min-h-screen px-4 py-20 bg-background relative overflow-hidden'
     >
-      <div className="container mx-auto max-w-6xl">
-        {/* Section Header */}
-        <div ref={titleRef} className="mb-12">
-          <h2 className="text-6xl md:text-8xl font-display font-bold mb-2">
-            Work <span className="italic text-primary">Experience</span>
-          </h2>
-          <p className="text-primary text-xs tracking-widest font-label font-bold uppercase">
-            CAREER JOURNEY // PROFESSIONAL HIGHLIGHTS
-          </p>
-        </div>
+      {/* Section Header */}
+      <div ref={titleRef} className='container mx-auto max-w-6xl mb-16'>
+        <h2 className='text-6xl md:text-8xl font-display font-bold mb-2'>
+          Work <span className='italic text-primary'>Experience</span>
+        </h2>
+        <p className='text-primary text-xs tracking-widest font-label font-bold uppercase'>
+          CAREER JOURNEY // PROFESSIONAL HIGHLIGHTS
+        </p>
+      </div>
 
-        {/* Mountain Trek Timeline */}
-        <div ref={timelineRef} className="relative">
-          {/* SVG Path - The Mountain Trail */}
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none hidden md:block"
-            style={{ zIndex: 0 }}
-          >
-            <path
-              className="timeline-path"
-              d="M 100 800 Q 200 600, 300 400 T 700 200 T 1100 100"
-              stroke="hsl(var(--primary))"
-              strokeWidth="3"
-              fill="none"
-              strokeDasharray="10 5"
-              strokeDashoffset="1000"
-              opacity="0.3"
-            />
-          </svg>
+      {/* Experience Timeline Container */}
+      <div ref={timelineRef} className='container mx-auto max-w-6xl relative'>
+        {/* Connecting Trail Path */}
+        <svg 
+          className="absolute inset-0 w-full h-full pointer-events-none hidden md:block" 
+          style={{ zIndex: 0 }}
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient id="pathGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="rgb(255, 144, 105)" stopOpacity="0.3" />
+              <stop offset="50%" stopColor="rgb(255, 144, 105)" stopOpacity="0.15" />
+              <stop offset="100%" stopColor="rgb(255, 144, 105)" stopOpacity="0.05" />
+            </linearGradient>
+          </defs>
+          
+          {/* Generate connecting lines between cards */}
+          {experienceList.map((exp, index) => {
+            if (index === experienceList.length - 1) return null; // Skip last card
+            
+            const currentSide = index % 2 === 0 ? 'left' : 'right';
+            const nextSide = (index + 1) % 2 === 0 ? 'left' : 'right';
+            
+            // Calculate approximate positions based on card pattern
+            const cardHeightEstimate = 400; // Approximate card height
+            const gapBetweenCards = index < experienceList.length - 1 ? 128 : 0; // mb-32 = 128px
+            const currentY = index * (cardHeightEstimate + gapBetweenCards) + (cardHeightEstimate / 2);
+            const nextY = (index + 1) * (cardHeightEstimate + gapBetweenCards) + (cardHeightEstimate / 2);
+            
+            // X positions based on card width patterns
+            const currentWidth = parseInt(cardWidthPattern[index % cardWidthPattern.length]);
+            const nextWidth = parseInt(cardWidthPattern[(index + 1) % cardWidthPattern.length]);
+            
+            let currentX, nextX;
+            
+            // Calculate X based on margin pattern
+            if (currentSide === 'left') {
+              currentX = currentWidth;
+            } else {
+              currentX = 100 - currentWidth;
+            }
+            
+            if (nextSide === 'left') {
+              nextX = nextWidth;
+            } else {
+              nextX = 100 - nextWidth;
+            }
+            
+            // Create curved path
+            const controlPointY = currentY + (nextY - currentY) / 2;
+            
+            return (
+              <path
+                key={`path-${index}`}
+                d={`M ${currentX}% ${currentY} Q ${currentX}% ${controlPointY}, ${nextX}% ${nextY}`}
+                stroke="url(#pathGradient)"
+                strokeWidth="2"
+                fill="none"
+                strokeDasharray="8 8"
+                opacity="0.6"
+                className="trail-path"
+              />
+            );
+          })}
+        </svg>
 
-          {/* Experience Cards */}
-          <div className="relative space-y-16 md:space-y-24">
-            {experienceList.map((exp: Experience, index: number) => {
-              const isLeft = index % 2 === 0;
-              
-              return (
-                <div
-                  key={exp._id}
-                  className={`experience-card relative flex flex-col md:flex-row gap-8 items-center ${
-                    isLeft ? 'md:flex-row' : 'md:flex-row-reverse'
-                  }`}
-                >
-                  {/* Mountain Peak Icon */}
-                  <div className="mountain-peak relative flex-shrink-0">
-                    <div className="relative">
-                      {/* Peak circle */}
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent-purple flex items-center justify-center border-4 border-background shadow-lg shadow-primary/25">
-                        {exp.current ? (
-                          <svg className="w-8 h-8 text-primary-foreground animate-pulse" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
-                        ) : (
-                          <svg className="w-8 h-8 text-primary-foreground" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        )}
-                      </div>
-                      
-                      {/* Elevation label */}
-                      <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-label text-muted-foreground uppercase tracking-wider">
-                        {formatDate(exp.startDate, false)}
-                      </div>
+        {experienceList.map((exp: Experience, index: number) => {
+          const isCurrentRole = exp.current;
+          const cardWidth = cardWidthPattern[index % cardWidthPattern.length];
+          const cardMargin =
+            cardOffsetPattern[index % cardOffsetPattern.length];
+          const yearSide = index % 2 === 0 ? 'left' : 'right';
+          const year = getYear(exp.startDate);
+
+          return (
+            <div key={exp._id} className='relative mb-20 md:mb-16'>
+              {/* Year Marker - Side Margins (Desktop only) */}
+              {year && (
+                <>
+                  {/* Left side year */}
+                  {yearSide === 'left' && (
+                    <div className='year-marker hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 -translate-x-24 xl:-translate-x-32'>
+                      <span className='text-6xl xl:text-7xl font-display font-bold text-foreground/30 -rotate-90 origin-center inline-block whitespace-nowrap'>
+                        {year}
+                      </span>
                     </div>
-                  </div>
+                  )}
 
-                  {/* Content Card */}
-                  <div className={`flex-1 ${isLeft ? 'md:text-left' : 'md:text-right'}`}>
-                    <div className="bg-surface-container backdrop-blur-sm rounded-xl p-6 hover:bg-surface-container-high transition-all duration-300 group hover:shadow-xl hover:shadow-primary/10">
+                  {/* Right side year */}
+                  {yearSide === 'right' && (
+                    <div className='year-marker hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 translate-x-24 xl:translate-x-32'>
+                      <span className='text-6xl xl:text-7xl font-display font-bold text-foreground/30 rotate-90 origin-center inline-block whitespace-nowrap'>
+                        {year}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Mobile year - horizontal at top */}
+                  <div className='lg:hidden mb-4'>
+                    <span className='text-3xl font-display font-bold text-foreground/30'>
+                      {year}
+                    </span>
+                  </div>
+                </>
+              )}
+
+              {/* Experience Card */}
+              <div
+                className='experience-card relative'
+                style={{
+                  width: '100%',
+                  maxWidth: cardWidth,
+                  margin: cardMargin,
+                  zIndex: 10,
+                }}
+              >
+                {isCurrentRole ? (
+                  // Current Role Card - Minimal with subtle accent
+                  <div className='relative rounded-2xl p-6 md:p-8 bg-surface-container-high border border-border/20 hover:border-primary/40 transition-all duration-500 group'>
+                    {/* Content */}
+                    <div className='relative z-10'>
                       {/* Header */}
-                      <div className="mb-4">
-                        <div className="flex items-start justify-between flex-col md:flex-row gap-2 mb-2">
-                          <div className={isLeft ? '' : 'md:order-2'}>
-                            <h3 className="text-xl font-heading font-bold group-hover:text-primary transition-colors">
-                              {exp.position}
-                            </h3>
-                            <p className="text-primary font-body font-medium">{exp.company}</p>
+                      <div className='mb-4'>
+                        <div className='flex items-start justify-between flex-col md:flex-row gap-3 mb-3'>
+                          <div className='flex items-start gap-3'>
+                            {/* Company Logo */}
+                            {exp.companyLogo && (
+                              <div className='flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-lg overflow-hidde border border-border/20 p-1.5'>
+                                <Image
+                                  src={urlFor(exp.companyLogo)
+                                    .width(80)
+                                    .height(80)
+                                    .url()}
+                                  alt={`${exp.company} logo`}
+                                  width={80}
+                                  height={80}
+                                  className='w-full h-full object-contain'
+                                />
+                              </div>
+                            )}
+                            <div>
+                              <h3 className='text-2xl md:text-3xl font-display font-bold text-foreground mb-2 leading-tight'>
+                                {exp.position}
+                              </h3>
+                              <p className='text-lg md:text-xl font-body font-medium text-muted-foreground'>
+                                {exp.company}
+                              </p>
+                            </div>
                           </div>
+
+                          {/* Current Badge - minimal */}
+                          <div className='inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20'>
+                            <div className='w-1.5 h-1.5 rounded-full bg-primary animate-pulse' />
+                            <span className='text-xs font-label uppercase tracking-wider text-primary font-medium'>
+                              Current
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Location & Date */}
+                        <div className='flex flex-wrap items-center gap-4 text-sm text-muted-foreground/70 font-body'>
                           {exp.location && (
-                            <div className={`flex items-center gap-2 text-sm text-muted-foreground font-body ${isLeft ? '' : 'md:order-1'}`}>
-                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                            <div className='flex items-center gap-2'>
+                              <svg
+                                className='w-4 h-4'
+                                fill='currentColor'
+                                viewBox='0 0 20 20'
+                              >
+                                <path
+                                  fillRule='evenodd'
+                                  d='M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z'
+                                  clipRule='evenodd'
+                                />
                               </svg>
                               {exp.location}
                             </div>
                           )}
-                        </div>
-                        <div className="flex items-center gap-2 text-sm font-label text-muted-foreground">
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                          </svg>
-                          {formatDate(exp.startDate, false)} - {formatDate(exp.endDate, exp.current)}
-                          {exp.current && (
-                            <span className="ml-2 px-2 py-0.5 bg-accent-green/20 text-accent-green text-xs rounded-full font-label uppercase tracking-wider">
-                              Current
+                          <div className='flex items-center gap-2'>
+                            <svg
+                              className='w-4 h-4'
+                              fill='currentColor'
+                              viewBox='0 0 20 20'
+                            >
+                              <path
+                                fillRule='evenodd'
+                                d='M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z'
+                                clipRule='evenodd'
+                              />
+                            </svg>
+                            <span className='font-label text-xs tracking-wider'>
+                              {formatDate(exp.startDate, false)} -{' '}
+                              {formatDate(exp.endDate, exp.current)}
                             </span>
-                          )}
+                          </div>
                         </div>
                       </div>
 
                       {/* Description */}
-                      <p className="text-muted-foreground font-body mb-4 leading-relaxed whitespace-pre-line">
+                      <p className='text-muted-foreground font-body mb-4 leading-relaxed whitespace-pre-line'>
                         {exp.description}
                       </p>
 
-                      {/* Technologies */}
+                      {/* Technologies - Simple text list */}
                       {exp.technologies && exp.technologies.length > 0 && (
-                        <div className="mb-4">
-                          <div className="flex flex-wrap gap-2">
+                        <div className='mb-4'>
+                          <div className='flex flex-wrap gap-2'>
                             {exp.technologies.map((tech) => (
                               <span
                                 key={tech}
-                                className="px-3 py-1 bg-surface-bright backdrop-blur-sm rounded-full text-xs font-label uppercase tracking-wider"
+                                className='px-2.5 py-1 rounded bg-surface-container text-muted-foreground/80 text-xs font-label uppercase tracking-wide'
                               >
                                 {tech}
                               </span>
@@ -233,42 +355,164 @@ export default function Experience({ experiences: sanityExperiences }: Experienc
 
                       {/* Achievements */}
                       {exp.achievements && exp.achievements.length > 0 && (
-                        <div className="pt-4 border-t border-border">
-                          <h4 className="text-sm font-heading font-bold mb-2 text-accent-green flex items-center gap-2">
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            Achievements
+                        <div className='pt-4 border-t border-border/10'>
+                          <h4 className='text-xs font-label font-bold uppercase tracking-wider mb-3 text-muted-foreground/60'>
+                            Key Achievements
                           </h4>
-                          <ul className="space-y-1 text-sm text-muted-foreground font-body">
-                            {exp.achievements?.map((achievement: string, idx: number) => (
-                              <li key={idx} className="flex items-start gap-2">
-                                <span className="text-accent-green mt-1">✓</span>
-                                <span>{achievement}</span>
-                              </li>
-                            ))}
+                          <ul className='space-y-2'>
+                            {exp.achievements.map(
+                              (achievement: string, idx: number) => (
+                                <li
+                                  key={idx}
+                                  className='flex items-start gap-3'
+                                >
+                                  <span className='text-primary mt-0.5 text-sm'>
+                                    →
+                                  </span>
+                                  <span className='text-sm text-muted-foreground font-body leading-relaxed'>
+                                    {achievement}
+                                  </span>
+                                </li>
+                              ),
+                            )}
                           </ul>
                         </div>
                       )}
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                ) : (
+                  // Past Role Card - Even more minimal
+                  <div className='relative rounded-2xl p-6 bg-surface-container border border-border/10 hover:border-border/20 transition-all duration-500 group'>
+                    {/* Content */}
+                    <div className='relative z-10'>
+                      {/* Header */}
+                      <div className='mb-4'>
+                        <div className='flex items-start justify-between flex-col md:flex-row gap-3 mb-3'>
+                          <div className='flex items-start gap-3'>
+                            {/* Company Logo */}
+                            {exp.companyLogo && (
+                              <div className='flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-lg overflow-hidden bg-white/5 border border-border/20 p-1.5'>
+                                <Image
+                                  src={urlFor(exp.companyLogo)
+                                    .width(80)
+                                    .height(80)
+                                    .url()}
+                                  alt={`${exp.company} logo`}
+                                  width={80}
+                                  height={80}
+                                  className='w-full h-full object-contain'
+                                />
+                              </div>
+                            )}
+                            <div>
+                              <h3 className='text-2xl md:text-3xl font-display font-bold text-foreground mb-2 leading-tight'>
+                                {exp.position}
+                              </h3>
+                              <p className='text-lg md:text-xl font-body font-medium text-muted-foreground'>
+                                {exp.company}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
 
-          {/* Trail End - Flag */}
-          <div className="mt-20 flex justify-center">
-            <div className="text-center">
-              <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-accent-purple flex items-center justify-center animate-bounce">
-                <svg className="w-10 h-10 text-primary-foreground" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clipRule="evenodd" />
-                </svg>
+                        {/* Location & Date */}
+                        <div className='flex flex-wrap items-center gap-4 text-sm text-muted-foreground/60 font-body'>
+                          {exp.location && (
+                            <div className='flex items-center gap-2'>
+                              <svg
+                                className='w-4 h-4'
+                                fill='currentColor'
+                                viewBox='0 0 20 20'
+                              >
+                                <path
+                                  fillRule='evenodd'
+                                  d='M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z'
+                                  clipRule='evenodd'
+                                />
+                              </svg>
+                              {exp.location}
+                            </div>
+                          )}
+                          <div className='flex items-center gap-2'>
+                            <svg
+                              className='w-4 h-4'
+                              fill='currentColor'
+                              viewBox='0 0 20 20'
+                            >
+                              <path
+                                fillRule='evenodd'
+                                d='M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z'
+                                clipRule='evenodd'
+                              />
+                            </svg>
+                            <span className='font-label text-xs tracking-wider'>
+                              {formatDate(exp.startDate, false)} -{' '}
+                              {formatDate(exp.endDate, exp.current)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Description */}
+                      <p className='text-muted-foreground/80 font-body mb-4 leading-relaxed whitespace-pre-line'>
+                        {exp.description}
+                      </p>
+
+                      {/* Technologies - Simple text list */}
+                      {exp.technologies && exp.technologies.length > 0 && (
+                        <div className='mb-4'>
+                          <div className='flex flex-wrap gap-2'>
+                            {exp.technologies.map((tech) => (
+                              <span
+                                key={tech}
+                                className='px-2.5 py-1 rounded bg-surface-base text-muted-foreground/70 text-xs font-label uppercase tracking-wide'
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Achievements */}
+                      {exp.achievements && exp.achievements.length > 0 && (
+                        <div className='pt-4 border-t border-border/10'>
+                          <h4 className='text-xs font-label font-bold uppercase tracking-wider mb-3 text-muted-foreground/50'>
+                            Key Achievements
+                          </h4>
+                          <ul className='space-y-2'>
+                            {exp.achievements.map(
+                              (achievement: string, idx: number) => (
+                                <li
+                                  key={idx}
+                                  className='flex items-start gap-3'
+                                >
+                                  <span className='text-muted-foreground/40 mt-0.5 text-sm'>
+                                    →
+                                  </span>
+                                  <span className='text-sm text-muted-foreground/70 font-body leading-relaxed'>
+                                    {achievement}
+                                  </span>
+                                </li>
+                              ),
+                            )}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
-              <p className="text-muted-foreground font-body font-medium">
-                The journey continues...
-              </p>
             </div>
+          );
+        })}
+
+        {/* Section Footer */}
+        <div className='mt-20 text-center'>
+          <div className='inline-flex items-center gap-3 text-muted-foreground font-body'>
+            <div className='h-px w-12 bg-border' />
+            <span className='text-sm'>The journey continues...</span>
+            <div className='h-px w-12 bg-border' />
           </div>
         </div>
       </div>
