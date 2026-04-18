@@ -14,39 +14,45 @@ interface ProjectsProps {
   projects: Project[];
 }
 
-// Category configuration matching Projects section design
-const categoryConfig: Record<string, {
-  label: string;
-  accent: string;
-  rgb: string;
-}> = {
-  fullstack: { label: 'Full-Stack',  accent: 'hsl(var(--primary))',       rgb: '255,144,105' },
-  frontend:  { label: 'Frontend',    accent: 'hsl(var(--accent-blue))',   rgb: '0,227,253'   },
-  backend:   { label: 'Backend',     accent: 'hsl(var(--accent-green))',  rgb: '52,211,153'  },
-  ai:        { label: 'AI/ML',       accent: 'hsl(var(--accent-purple))', rgb: '165,140,255' },
-  tools:     { label: 'Tools',       accent: 'hsl(var(--accent-yellow))', rgb: '251,191,36'  },
+const categoryConfig: Record<
+  string,
+  {
+    label: string;
+    accentClass: string;
+    surfaceClass: string;
+  }
+> = {
+  fullstack: { label: 'Full-Stack', accentClass: 'text-primary', surfaceClass: 'border-primary/20 bg-primary/10' },
+  frontend: { label: 'Frontend', accentClass: 'text-accent-blue', surfaceClass: 'border-accent-blue/20 bg-accent-blue/10' },
+  backend: { label: 'Backend', accentClass: 'text-accent-green', surfaceClass: 'border-accent-green/20 bg-accent-green/10' },
+  ai: { label: 'AI / ML', accentClass: 'text-accent-purple', surfaceClass: 'border-accent-purple/20 bg-accent-purple/10' },
+  tools: { label: 'Tools', accentClass: 'text-accent-yellow', surfaceClass: 'border-accent-yellow/20 bg-accent-yellow/10' },
 };
 
-// Custom PortableText components for rich text rendering
 const portableTextComponents = {
   block: {
-    normal: ({ children }: any) => <p className="mb-2 last:mb-0">{children}</p>,
-    h3: ({ children }: any) => <h3 className="text-base font-semibold mb-2">{children}</h3>,
-    h4: ({ children }: any) => <h4 className="text-sm font-semibold mb-1">{children}</h4>,
+    normal: ({ children }: any) => <p className="mb-3 last:mb-0">{children}</p>,
   },
   marks: {
-    strong: ({ children }: any) => <strong className="font-semibold">{children}</strong>,
+    strong: ({ children }: any) => <strong className="font-semibold text-foreground">{children}</strong>,
     em: ({ children }: any) => <em className="italic">{children}</em>,
-    code: ({ children }: any) => <code className="px-1 py-0.5 rounded bg-surface-container-high text-xs">{children}</code>,
+    code: ({ children }: any) => (
+      <code className="rounded bg-surface-container-high px-1 py-0.5 text-xs">{children}</code>
+    ),
     link: ({ children, value }: any) => (
-      <a href={value?.href} target="_blank" rel="noopener noreferrer" className="underline hover:text-primary transition-colors">
+      <a
+        href={value?.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline transition-colors hover:text-primary"
+      >
         {children}
       </a>
     ),
   },
   list: {
-    bullet: ({ children }: any) => <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>,
-    number: ({ children }: any) => <ol className="list-decimal list-inside mb-2 space-y-1">{children}</ol>,
+    bullet: ({ children }: any) => <ul className="mb-3 list-disc space-y-1 pl-5">{children}</ul>,
+    number: ({ children }: any) => <ol className="mb-3 list-decimal space-y-1 pl-5">{children}</ol>,
   },
   listItem: {
     bullet: ({ children }: any) => <li className="text-sm">{children}</li>,
@@ -54,13 +60,12 @@ const portableTextComponents = {
   },
 };
 
-// Fallback data
 const fallbackProjects: Project[] = [
   {
     _id: '1',
     title: 'Jira Flow',
     slug: { current: 'jira-flow' },
-    shortDescription: 'Project Management Dashboard adopted by ~37 engineers',
+    shortDescription: 'Project management dashboard adopted by ~37 engineers.',
     technologies: ['Next.js', 'Jira API', 'React', 'TypeScript'],
     category: 'fullstack',
     githubUrl: 'https://github.com/divyavert/jira-flow',
@@ -71,7 +76,7 @@ const fallbackProjects: Project[] = [
     _id: '2',
     title: 'Confluence RAG Chatbot',
     slug: { current: 'confluence-rag' },
-    shortDescription: 'AI-powered chatbot using RAG for intelligent document search',
+    shortDescription: 'AI-powered chatbot using RAG for intelligent document search.',
     technologies: ['Python', 'FastAPI', 'ChromaDB', 'OpenAI'],
     category: 'ai',
     githubUrl: 'https://github.com/divyavert/confluence-rag',
@@ -82,7 +87,7 @@ const fallbackProjects: Project[] = [
     _id: '3',
     title: 'Modern Portfolio Website',
     slug: { current: 'portfolio' },
-    shortDescription: 'Sleek animated portfolio with GSAP and neon editorial design',
+    shortDescription: 'Portfolio site with GSAP motion, Sanity CMS, and custom UI systems.',
     technologies: ['Next.js', 'TypeScript', 'GSAP', 'Sanity'],
     category: 'frontend',
     liveUrl: 'https://divyavert.com',
@@ -92,47 +97,97 @@ const fallbackProjects: Project[] = [
   },
 ];
 
+function getProjectImage(project: Project, index: number) {
+  if (project.thumbnail) {
+    return urlFor(project.thumbnail).width(1200).height(900).url();
+  }
+
+  return `https://images.unsplash.com/photo-${
+    index === 0
+      ? '1460925895917-afdab827c52f'
+      : index === 1
+        ? '1555421689-491a97ff2040'
+        : '1517694712202-14dd9538aa97'
+  }?w=1200&h=900&fit=crop&q=80`;
+}
+
+function ProjectActions({ project, compact = false }: { project: Project; compact?: boolean }) {
+  const liveClasses = compact
+    ? 'inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-[11px] font-label font-bold uppercase tracking-[0.2em] text-primary transition-colors hover:bg-primary/15'
+    : 'inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-label font-bold uppercase tracking-[0.2em] text-primary transition-colors hover:bg-primary/15';
+
+  const codeClasses = compact
+    ? 'inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-surface-container-high px-3 py-1.5 text-[11px] font-label font-bold uppercase tracking-[0.2em] text-foreground transition-colors hover:bg-white/5'
+    : 'inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-surface-container-high px-4 py-2 text-sm font-label font-bold uppercase tracking-[0.2em] text-foreground transition-colors hover:bg-white/5';
+
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      {project.liveUrl ? (
+        <a
+          href={project.liveUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={liveClasses}
+        >
+          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+          Live
+        </a>
+      ) : null}
+
+      {project.githubUrl ? (
+        <a
+          href={project.githubUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={codeClasses}
+        >
+          <svg className="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+          </svg>
+          Code
+        </a>
+      ) : null}
+    </div>
+  );
+}
+
 export default function Projects({ projects: sanityProjects }: ProjectsProps) {
   const projectList = sanityProjects && sanityProjects.length > 0 ? sanityProjects : fallbackProjects;
   const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  const sortedProjects = [...projectList].sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Title animation
       gsap.fromTo(
-        titleRef.current,
-        { y: 50, opacity: 0 },
+        headerRef.current,
+        { y: 40, opacity: 0 },
         {
-          scrollTrigger: {
-            trigger: titleRef.current,
-            start: 'top 80%',
-          },
+          scrollTrigger: { trigger: headerRef.current, start: 'top 82%' },
           y: 0,
           opacity: 1,
           duration: 0.8,
           ease: 'power3.out',
           immediateRender: false,
-        }
+        },
       );
 
-      // Cards stagger animation
       gsap.fromTo(
-        cardsRef.current?.querySelectorAll('.project-card') || [],
-        { y: 60, opacity: 0 },
+        gridRef.current?.querySelectorAll('.project-card') || [],
+        { y: 48, opacity: 0 },
         {
-          scrollTrigger: {
-            trigger: cardsRef.current,
-            start: 'top 70%',
-          },
+          scrollTrigger: { trigger: gridRef.current, start: 'top 78%' },
           y: 0,
           opacity: 1,
           duration: 0.7,
-          stagger: 0.15,
+          stagger: 0.12,
           ease: 'power3.out',
           immediateRender: false,
-        }
+        },
       );
     }, sectionRef);
 
@@ -140,23 +195,9 @@ export default function Projects({ projects: sanityProjects }: ProjectsProps) {
   }, []);
 
   return (
-    <section
-      id="projects"
-      ref={sectionRef}
-      className="relative px-4 py-24 bg-surface-container-low overflow-hidden"
-    >
-      {/* Background effects */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.02]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          backgroundSize: '180px 180px',
-        }}
-      />
-
-      <div className="container mx-auto max-w-6xl relative z-10">
-        {/* Section Header */}
-        <div ref={titleRef} className="mb-12">
+    <section id="projects" ref={sectionRef} className="px-4 py-24 bg-surface-container-low">
+      <div className="container mx-auto max-w-6xl">
+        <div ref={headerRef} className="mb-12">
           <h2 className="text-6xl md:text-8xl font-display font-bold mb-2">
             Featured <span className="italic text-primary">Projects</span>
           </h2>
@@ -165,190 +206,76 @@ export default function Projects({ projects: sanityProjects }: ProjectsProps) {
           </p>
         </div>
 
-        {/* Bento Grid */}
-        <div
-          ref={cardsRef}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-        >
-          {projectList.map((project, index: number) => {
-            const cat = categoryConfig[project.category || 'fullstack'] ?? categoryConfig.fullstack;
-            
-            // Use thumbnail from Sanity, fallback to Unsplash placeholder
-            const projectImage = project.thumbnail 
-              ? urlFor(project.thumbnail).width(800).height(450).url() 
-              : `https://images.unsplash.com/photo-${
-                  index === 0 ? '1460925895917-afdab827c52f' : // Code/Development
-                  index === 1 ? '1555421689-491a97ff2040' : // AI/Tech
-                  '1517694712202-14dd9538aa97' // Modern tech
-                }?w=800&h=450&fit=crop&q=80`;
-            
+        <div ref={gridRef} className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {sortedProjects.map((project, index) => {
+            const category = categoryConfig[project.category || 'fullstack'] ?? categoryConfig.fullstack;
+
             return (
-              <div
+              <article
                 key={project._id}
-                className="project-card group relative overflow-hidden rounded-2xl transition-all duration-300 hover:scale-[1.02] cursor-pointer flex flex-col"
-                style={{
-                  background: 'hsl(var(--surface-container))',
-                  border: `1px solid rgba(${cat.rgb}, 0.2)`,
-                  boxShadow: `0 2px 8px rgba(0,0,0,0.2)`,
-                }}
+                className="project-card overflow-hidden rounded-2xl border border-white/10 bg-surface-container shadow-[0_2px_10px_rgba(0,0,0,0.14)] transition-colors duration-200 hover:bg-surface-container-high"
               >
-                {/* Image Section - 4:3 aspect ratio, top of card */}
-                <div className="relative w-full aspect-[4/3] overflow-hidden bg-surface-container-high flex-shrink-0">
-                  <Image 
-                    src={projectImage} 
+                <div className="relative aspect-[4/3] bg-surface-container-high">
+                  <Image
+                    src={getProjectImage(project, index)}
                     alt={project.title}
                     fill
+                    className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-300"
                     priority={index < 3}
                   />
                 </div>
 
-                {/* Content Section */}
-                <div className="p-5 flex flex-col gap-2.5 flex-1">
-                  {/* Category Badge */}
-                  <div className="flex-shrink-0">
+                <div className="flex min-h-[246px] flex-col gap-4 p-5">
+                  <div className="flex items-center justify-between gap-3">
                     <span
-                      className="inline-block px-2.5 py-1 rounded-full text-[10px] font-label uppercase tracking-[0.2em] font-bold"
-                      style={{
-                        background: `rgba(${cat.rgb}, 0.1)`,
-                        color: cat.accent,
-                        border: `1px solid rgba(${cat.rgb}, 0.25)`,
-                      }}
+                      className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] font-label font-bold uppercase tracking-[0.22em] ${category.accentClass} ${category.surfaceClass}`}
                     >
-                      {cat.label}
+                      {category.label}
                     </span>
+                    {project.status ? (
+                      <span className="text-[10px] font-label uppercase tracking-[0.2em] text-muted-foreground">
+                        {project.status.replace('-', ' ')}
+                      </span>
+                    ) : null}
                   </div>
 
-                  {/* Title */}
-                  <h3 className="text-xl font-display font-bold leading-tight flex-shrink-0" style={{ color: 'hsl(var(--foreground))' }}>
-                    {project.title}
-                  </h3>
-
-                  {/* Description - Full text with overflow ellipsis */}
-                  <div 
-                    className="text-sm font-body leading-relaxed flex-1 overflow-hidden"
-                    style={{ 
-                      color: 'hsl(var(--muted-foreground))',
-                      display: '-webkit-box',
-                      WebkitLineClamp: '2',
-                      WebkitBoxOrient: 'vertical',
-                    }}
-                  >
-                    {project.description ? (
-                      <PortableText value={project.description} components={portableTextComponents} />
-                    ) : (
-                      project.shortDescription
-                    )}
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-display font-bold leading-tight text-foreground">
+                      {project.title}
+                    </h3>
+                    <div className="line-clamp-3 text-sm leading-6 text-muted-foreground">
+                      {project.description ? (
+                        <PortableText value={project.description} components={portableTextComponents} />
+                      ) : (
+                        project.shortDescription
+                      )}
+                    </div>
                   </div>
 
-                  {/* Tech Stack */}
-                  {project.technologies && project.technologies.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 flex-shrink-0">
-                      {project.technologies.slice(0, 4).map((tech) => (
+                  {project.technologies?.length ? (
+                    <div className="mt-auto flex flex-wrap gap-2">
+                      {project.technologies.slice(0, 3).map((tech) => (
                         <span
                           key={tech}
-                          className="px-2.5 py-1 rounded-lg text-[10px] font-label uppercase tracking-wider font-medium"
-                          style={{
-                            background: `rgba(${cat.rgb}, 0.08)`,
-                            color: 'hsl(var(--foreground) / 0.7)',
-                            border: `1px solid rgba(${cat.rgb}, 0.15)`,
-                          }}
+                          className="rounded-full border border-white/10 bg-surface-container-high px-2.5 py-1 text-[10px] font-label font-bold uppercase tracking-[0.18em] text-muted-foreground"
                         >
                           {tech}
                         </span>
                       ))}
-                      {project.technologies.length > 4 && (
-                        <span
-                          className="px-2.5 py-1 rounded-lg text-[10px] font-label uppercase tracking-wider font-medium"
-                          style={{
-                            background: `rgba(${cat.rgb}, 0.08)`,
-                            color: 'hsl(var(--foreground) / 0.5)',
-                            border: `1px solid rgba(${cat.rgb}, 0.15)`,
-                          }}
-                        >
-                          +{project.technologies.length - 4}
+                      {project.technologies.length > 3 ? (
+                        <span className="rounded-full border border-white/10 bg-surface-container-high px-2.5 py-1 text-[10px] font-label font-bold uppercase tracking-[0.18em] text-muted-foreground">
+                          +{project.technologies.length - 3}
                         </span>
-                      )}
+                      ) : null}
                     </div>
-                  )}
+                  ) : null}
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-2 flex-shrink-0">
-                    {project.liveUrl && (
-                      <a
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-body font-semibold text-xs transition-all duration-300 hover:scale-105"
-                        style={{
-                          background: `linear-gradient(135deg, rgba(${cat.rgb}, 0.9), rgba(${cat.rgb}, 0.7))`,
-                          color: 'hsl(var(--background))',
-                          boxShadow: `0 2px 6px rgba(0,0,0,0.2)`,
-                        }}
-                      >
-                        <svg
-                          className="w-3.5 h-3.5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={2.5}
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
-                        View Live
-                      </a>
-                    )}
-
-                    {project.githubUrl && (
-                      <a
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center w-9 h-9 rounded-lg transition-all duration-300 hover:scale-105"
-                        style={{
-                          background: `rgba(${cat.rgb}, 0.1)`,
-                          border: `1px solid rgba(${cat.rgb}, 0.2)`,
-                          color: cat.accent,
-                        }}
-                        aria-label="GitHub Repository"
-                      >
-                        <svg
-                          className="w-4 h-4 fill-current"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                        </svg>
-                      </a>
-                    )}
-                  </div>
+                  <ProjectActions project={project} compact />
                 </div>
-
-                {/* Hover lift effect */}
-                <div 
-                  className="absolute inset-0 pointer-events-none rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  style={{
-                    boxShadow: `0 8px 24px rgba(${cat.rgb}, 0.15), 0 0 0 1px rgba(${cat.rgb}, 0.3)`,
-                  }}
-                />
-              </div>
+              </article>
             );
           })}
-        </div>
-
-        {/* View More Button */}
-        <div className="mt-12 text-center">
-          <a
-            href="https://github.com/divyavert"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-surface-container hover:bg-surface-container-high rounded-full font-body font-medium transition-all duration-300 hover:scale-105"
-          >
-            <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-            </svg>
-            View All Projects on GitHub
-          </a>
         </div>
       </div>
     </section>
