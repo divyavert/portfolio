@@ -1,5 +1,5 @@
 // Schema for currently learning/skill sprint
-export default {
+const skillSprintSchema = {
   name: 'skillSprint',
   title: 'Skill Sprint',
   type: 'document',
@@ -22,6 +22,18 @@ export default {
       title: 'Up Next Lesson',
       type: 'string',
       description: 'Next lesson or topic to learn',
+    },
+    {
+      name: 'focus',
+      title: 'Focus',
+      type: 'string',
+      description: 'Current learning focus, e.g. Backend Systems',
+    },
+    {
+      name: 'cadence',
+      title: 'Cadence',
+      type: 'string',
+      description: 'Learning rhythm, e.g. Daily Sprint',
     },
     {
       name: 'icon',
@@ -53,3 +65,5 @@ export default {
     },
   },
 };
+
+export default skillSprintSchema;

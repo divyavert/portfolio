@@ -139,5 +139,7 @@ export interface SkillSprint {
   courseName: string;
   progress: number;
   upNextLesson?: string;
+  focus?: string;
+  cadence?: string;
   icon: string;
 }

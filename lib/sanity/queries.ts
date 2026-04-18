@@ -310,6 +310,8 @@ export const skillSprintQuery = groq`
     courseName,
     progress,
     upNextLesson,
+    focus,
+    cadence,
     icon
   }
 `;
