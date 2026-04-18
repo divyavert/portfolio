@@ -56,6 +56,7 @@ export default function Contact({ personalInfo }: ContactProps) {
 
   const [currentStep, setCurrentStep] = useState<TerminalStep>('name');
   const [currentInput, setCurrentInput] = useState('');
+  const [cursorPosition, setCursorPosition] = useState(0);
   const [terminalHistory, setTerminalHistory] = useState<TerminalLine[]>([
     {
       type: 'info',
@@ -87,6 +88,14 @@ export default function Contact({ personalInfo }: ContactProps) {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Sync cursor position from the real (hidden) input element
+  const syncCursor = () => {
+    const el = inputRef.current;
+    if (el && 'selectionStart' in el && el.selectionStart !== null) {
+      setCursorPosition(el.selectionStart);
+    }
+  };
 
   // Auto-scroll to bottom of terminal
   useEffect(() => {
@@ -218,6 +227,15 @@ export default function Contact({ personalInfo }: ContactProps) {
     }
   };
 
+  const handleKeyUp = () => {
+    syncCursor();
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setCurrentInput(e.target.value);
+    setCursorPosition(e.target.selectionStart ?? e.target.value.length);
+  };
+
   const processInput = () => {
     const input = currentInput.trim();
 
@@ -260,6 +278,7 @@ export default function Contact({ personalInfo }: ContactProps) {
         }, 1000);
       }
       setCurrentInput('');
+      setCursorPosition(0);
       return;
     }
 
@@ -272,6 +291,7 @@ export default function Contact({ personalInfo }: ContactProps) {
         addToHistory({ type: 'prompt', content: prompt });
       }
       setCurrentInput('');
+      setCursorPosition(0);
       return;
     }
 
@@ -321,6 +341,7 @@ export default function Contact({ personalInfo }: ContactProps) {
 
     setCurrentStep(nextStep);
     setCurrentInput('');
+    setCursorPosition(0);
   };
 
   const resetTerminal = () => {
@@ -611,37 +632,44 @@ export default function Contact({ personalInfo }: ContactProps) {
                     <div className='flex-1 relative'>
                       {currentStep === 'message' ? (
                         <div className='relative'>
+                          {/* Visual display with cursor for textarea */}
+                          <div className='w-full font-mono text-white whitespace-pre-wrap break-words min-h-[4.5rem] pointer-events-none'>
+                            <span>{currentInput.slice(0, cursorPosition)}</span>
+                            <span className='inline-block w-2 h-5 bg-primary animate-pulse align-middle' />
+                            <span>{currentInput.slice(cursorPosition)}</span>
+                          </div>
                           <textarea
-                            ref={
-                              inputRef as React.RefObject<HTMLTextAreaElement>
-                            }
+                            ref={inputRef as React.RefObject<HTMLTextAreaElement>}
                             value={currentInput}
-                            onChange={(e) => setCurrentInput(e.target.value)}
+                            onChange={handleInputChange}
                             onKeyPress={handleKeyPress}
-                            className='w-full bg-transparent border-none outline-none text-white resize-none font-mono caret-transparent'
+                            onKeyUp={handleKeyUp}
+                            onSelect={syncCursor}
+                            onClick={syncCursor}
+                            className='absolute inset-0 w-full h-full bg-transparent border-none outline-none text-transparent resize-none font-mono caret-transparent'
                             rows={3}
-                            placeholder='Type your message and press Enter...'
                             disabled={isSubmitting}
                           />
                         </div>
                       ) : (
-                        <div className='relative inline-flex items-center w-full'>
-                          {currentInput ? (
-                            <>
-                              <span className='font-mono text-white whitespace-pre'>
-                                {currentInput}
-                              </span>
-                              <span className='w-2 h-5 bg-primary animate-pulse' />
-                            </>
-                          ) : (
-                            <span className='w-2 h-5 bg-primary animate-pulse ml-1' />
+                        <div className='relative flex items-center w-full min-h-[1.25rem]'>
+                          {/* Visual display with cursor split at position */}
+                          {currentInput.slice(0, cursorPosition) && (
+                            <span className='font-mono text-white whitespace-pre'>{currentInput.slice(0, cursorPosition)}</span>
+                          )}
+                          <span className='inline-block w-2 h-[1.1em] bg-primary animate-pulse flex-shrink-0 self-center' />
+                          {currentInput.slice(cursorPosition) && (
+                            <span className='font-mono text-white whitespace-pre'>{currentInput.slice(cursorPosition)}</span>
                           )}
                           <input
                             ref={inputRef as React.RefObject<HTMLInputElement>}
                             type={currentStep === 'email' ? 'email' : 'text'}
                             value={currentInput}
-                            onChange={(e) => setCurrentInput(e.target.value)}
+                            onChange={handleInputChange}
                             onKeyPress={handleKeyPress}
+                            onKeyUp={handleKeyUp}
+                            onSelect={syncCursor}
+                            onClick={syncCursor}
                             className='absolute inset-0 w-full bg-transparent border-none outline-none text-transparent font-mono caret-transparent'
                             disabled={isSubmitting}
                           />
