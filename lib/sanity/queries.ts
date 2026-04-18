@@ -120,17 +120,24 @@ export const allBlogPostsQuery = groq`
     title,
     slug,
     excerpt,
-    mainImage,
+    mainImage{
+      ...,
+      alt,
+      caption,
+      asset
+    },
     categories,
     tags,
     publishedAt,
     readingTime,
     featured,
     author->{
+      _id,
       name,
       slug,
       image,
-      role
+      role,
+      social
     }
   }
 `;
@@ -141,17 +148,24 @@ export const featuredBlogPostsQuery = groq`
     title,
     slug,
     excerpt,
-    mainImage,
+    mainImage{
+      ...,
+      alt,
+      caption,
+      asset
+    },
     categories,
     tags,
     publishedAt,
     readingTime,
     featured,
     author->{
+      _id,
       name,
       slug,
       image,
-      role
+      role,
+      social
     }
   }
 `;
@@ -162,7 +176,12 @@ export const blogPostBySlugQuery = groq`
     title,
     slug,
     excerpt,
-    mainImage,
+    mainImage{
+      ...,
+      alt,
+      caption,
+      asset
+    },
     categories,
     tags,
     publishedAt,
@@ -171,6 +190,7 @@ export const blogPostBySlugQuery = groq`
     featured,
     seo,
     author->{
+      _id,
       name,
       slug,
       image,
@@ -187,17 +207,24 @@ export const blogPostsByCategoryQuery = groq`
     title,
     slug,
     excerpt,
-    mainImage,
+    mainImage{
+      ...,
+      alt,
+      caption,
+      asset
+    },
     categories,
     tags,
     publishedAt,
     readingTime,
     featured,
     author->{
+      _id,
       name,
       slug,
       image,
-      role
+      role,
+      social
     }
   }
 `;
@@ -208,17 +235,24 @@ export const blogPostsByTagQuery = groq`
     title,
     slug,
     excerpt,
-    mainImage,
+    mainImage{
+      ...,
+      alt,
+      caption,
+      asset
+    },
     categories,
     tags,
     publishedAt,
     readingTime,
     featured,
     author->{
+      _id,
       name,
       slug,
       image,
-      role
+      role,
+      social
     }
   }
 `;
@@ -246,16 +280,23 @@ export const relatedBlogPostsQuery = groq`
     title,
     slug,
     excerpt,
-    mainImage,
+    mainImage{
+      ...,
+      alt,
+      caption,
+      asset
+    },
     categories,
     tags,
     publishedAt,
     readingTime,
     author->{
+      _id,
       name,
       slug,
       image,
-      role
+      role,
+      social
     }
   }
 `;
@@ -267,7 +308,12 @@ export const latestBlogPostQuery = groq`
     title,
     slug,
     excerpt,
-    mainImage,
+    mainImage{
+      ...,
+      alt,
+      caption,
+      asset
+    },
     categories,
     tags,
     publishedAt,

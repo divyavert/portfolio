@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Image from 'next/image';
+import Link from 'next/link';
 import { getMusicData } from '@/lib/api/itunes';
 import { getMoviePoster } from '@/lib/api/tmdb';
 import type { BlogPost, CurrentlyLoving, PersonalInfo, RecentlyWatched, SkillSprint } from '@/lib/sanity/types';
@@ -200,6 +201,7 @@ export default function Currently({
         <div ref={cardsRef} className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {latestBlogPost ? (
 <article className="currently-card gsap-hidden overflow-hidden rounded-2xl border border-white/10 bg-surface-container shadow-[0_2px_10px_rgba(0,0,0,0.16)]">
+              <Link href={`/blog/${latestBlogPost.slug.current}`} className="flex h-full flex-col">
               <div className="relative aspect-[4/3] bg-surface-container-high">
                 {latestBlogPost.mainImage ? (
                   <Image
@@ -254,6 +256,7 @@ export default function Currently({
                   </div>
                 ) : null}
               </div>
+              </Link>
             </article>
           ) : (
             <div className="currently-card gsap-hidden flex min-h-[280px] flex-col rounded-2xl border border-white/10 bg-surface-container p-5 shadow-[0_2px_10px_rgba(0,0,0,0.16)]">

@@ -4,6 +4,7 @@ import skill from './skill';
 import experience from './experience';
 import blogPost from './blogPost';
 import author from './author';
+import codeBlock from './codeBlock';
 import currentlyLoving from './currentlyLoving';
 import recentlyWatched from './recentlyWatched';
 import skillSprint from './skillSprint';
@@ -15,6 +16,7 @@ export const schemaTypes = [
   experience,
   blogPost,
   author,
+  codeBlock,
   currentlyLoving,
   recentlyWatched,
   skillSprint,

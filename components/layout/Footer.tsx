@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from 'next/navigation';
 import { Github, Linkedin, Twitter, Instagram, Download } from "lucide-react";
 
 const socialLinks = [
@@ -35,6 +36,14 @@ const quickLinks = [
 ];
 
 export function Footer() {
+  const pathname = usePathname();
+  const isHome = pathname === '/';
+
+  const resolvedQuickLinks = quickLinks.map((link) => ({
+    ...link,
+    href: link.href.startsWith('#') && !isHome ? `/${link.href}` : link.href,
+  }));
+
   return (
     <footer className="bg-surface-container">
       <div className="container mx-auto px-4 py-12">
@@ -54,7 +63,7 @@ export function Footer() {
           <div>
             <h4 className="font-label text-xs uppercase tracking-wider mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              {quickLinks.map((link) => (
+              {resolvedQuickLinks.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}

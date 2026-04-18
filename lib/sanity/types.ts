@@ -1,6 +1,19 @@
 import { SanityImageSource } from '@sanity/image-url/lib/types/types';
 import { PortableTextBlock } from '@portabletext/types';
 
+export interface SanitySlug {
+  current: string;
+}
+
+export interface SanityImageWithAlt {
+  alt?: string;
+  caption?: string;
+  asset?: {
+    _ref?: string;
+    _type?: string;
+  };
+}
+
 export interface PersonalInfo {
   _id: string;
   name: string;
@@ -33,9 +46,7 @@ export interface PersonalInfo {
 export interface Project {
   _id: string;
   title: string;
-  slug: {
-    current: string;
-  };
+  slug: SanitySlug;
   shortDescription?: string;
   description?: PortableTextBlock[];
   thumbnail?: SanityImageSource;
@@ -77,11 +88,9 @@ export interface Experience {
 export interface Author {
   _id: string;
   name: string;
-  slug: {
-    current: string;
-  };
+  slug: SanitySlug;
   image: SanityImageSource;
-  bio?: PortableTextBlock[];
+  bio?: PortableTextBlock[] | string;
   role?: string;
   social?: {
     twitter?: string;
@@ -94,18 +103,16 @@ export interface Author {
 export interface BlogPost {
   _id: string;
   title: string;
-  slug: {
-    current: string;
-  };
-  excerpt: string;
-  mainImage: SanityImageSource;
-  categories: string[];
-  tags: string[];
+  slug: SanitySlug;
+  excerpt?: string;
+  mainImage?: SanityImageSource & SanityImageWithAlt;
+  categories?: string[];
+  tags?: string[];
   publishedAt: string;
   body?: PortableTextBlock[];
   readingTime?: number;
   featured: boolean;
-  author: Author;
+  author?: Author;
   seo?: {
     metaTitle?: string;
     metaDescription?: string;
