@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { Home, FolderOpen, Wrench, Mountain, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ThemeToggler } from "@/components/ui/ThemeToggler";
 
 const navItems = [
   { id: "home", label: "Home", icon: Home, href: "#home" },
@@ -60,10 +59,6 @@ export function Navigation() {
             </button>
           );
         })}
-
-        <div className="w-px h-6 bg-border mx-2" />
-
-        <ThemeToggler />
       </div>
     </nav>
   );
