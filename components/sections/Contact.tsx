@@ -105,42 +105,54 @@ export default function Contact({ personalInfo }: ContactProps) {
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Title glitch entrance
-      gsap.from(titleRef.current, {
-        scrollTrigger: {
-          trigger: titleRef.current,
-          start: 'top 80%',
-        },
-        opacity: 0,
-        y: 50,
-        duration: 0.6,
-        ease: 'power3.out',
-      });
+      gsap.fromTo(titleRef.current,
+        { autoAlpha: 0, y: 50 },
+        {
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: 'top 80%',
+          },
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power3.out',
+          immediateRender: false,
+        }
+      );
 
       // Terminal boot-up animation
-      gsap.from(terminalRef.current, {
-        scrollTrigger: {
-          trigger: terminalRef.current,
-          start: 'top 75%',
-        },
-        opacity: 0,
-        scale: 0.95,
-        duration: 0.8,
-        ease: 'power2.out',
-      });
+      gsap.fromTo(terminalRef.current,
+        { autoAlpha: 0, scale: 0.95 },
+        {
+          scrollTrigger: {
+            trigger: terminalRef.current,
+            start: 'top 75%',
+          },
+          autoAlpha: 1,
+          scale: 1,
+          duration: 0.8,
+          ease: 'power2.out',
+          immediateRender: false,
+        }
+      );
 
       // Orbital social links
       const orbitals = orbitsRef.current?.querySelectorAll('.orbital') || [];
-      gsap.from(orbitals, {
-        scrollTrigger: {
-          trigger: orbitsRef.current,
-          start: 'top 70%',
-        },
-        scale: 0,
-        opacity: 0,
-        duration: 0.6,
-        stagger: 0.15,
-        ease: 'back.out(1.7)',
-      });
+      gsap.fromTo(orbitals,
+        { scale: 0, autoAlpha: 0 },
+        {
+          scrollTrigger: {
+            trigger: orbitsRef.current,
+            start: 'top 70%',
+          },
+          scale: 1,
+          autoAlpha: 1,
+          duration: 0.6,
+          stagger: 0.15,
+          ease: 'back.out(1.7)',
+          immediateRender: false,
+        }
+      );
     }, sectionRef);
 
     return () => ctx.revert();
@@ -366,7 +378,7 @@ export default function Contact({ personalInfo }: ContactProps) {
 
       <div className='container mx-auto max-w-6xl relative z-10'>
         {/* Section Header */}
-        <div ref={titleRef} className='mb-16 text-center'>
+        <div ref={titleRef} className='mb-16 text-center gsap-hidden'>
           <div className='inline-block mb-4'>
             <span className='text-xs font-mono text-accent-green tracking-wider'>
               {'>'} INITIALIZING_CONNECTION...
@@ -400,7 +412,7 @@ export default function Contact({ personalInfo }: ContactProps) {
               {/* Email Orbital */}
               <a
                 href={`mailto:${email}`}
-                className='orbital block group relative'
+                className='orbital gsap-hidden block group relative'
               >
                 <div className='relative bg-surface-container hover:bg-surface-container-high rounded-2xl p-5 transition-all duration-300 hover:scale-[1.02] border border-primary/10 hover:border-primary/20'>
                   {/* Holographic shine */}
@@ -440,7 +452,7 @@ export default function Contact({ personalInfo }: ContactProps) {
                 href={github}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='orbital block group relative'
+                className='orbital gsap-hidden block group relative'
               >
                 <div className='relative bg-surface-container hover:bg-surface-container-high rounded-2xl p-5 transition-all duration-300 hover:scale-[1.02] border border-secondary/10 hover:border-secondary/20'>
                   <div
@@ -478,7 +490,7 @@ export default function Contact({ personalInfo }: ContactProps) {
                 href={linkedin}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='orbital block group relative'
+                className='orbital gsap-hidden block group relative'
               >
                 <div className='relative bg-surface-container hover:bg-surface-container-high rounded-2xl p-5 transition-all duration-300 hover:scale-[1.02] border border-tertiary/10 hover:border-tertiary/20'>
                   <div
@@ -544,7 +556,7 @@ export default function Contact({ personalInfo }: ContactProps) {
           </div>
 
           {/* Interactive Terminal - Right 2 Columns */}
-          <div ref={terminalRef} className='lg:col-span-2'>
+          <div ref={terminalRef} className='lg:col-span-2 gsap-hidden'>
             <div className='relative bg-surface-container rounded-2xl overflow-hidden border border-primary/10'>
               {/* Terminal Header */}
               <div className='bg-surface-container-high px-6 py-3 border-b border-primary/10 flex items-center justify-between'>

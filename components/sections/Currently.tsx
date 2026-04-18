@@ -88,14 +88,14 @@ export default function Currently({
     const ctx = gsap.context(() => {
       gsap.fromTo(
         titleRef.current,
-        { y: 40, opacity: 0 },
+        { y: 40, autoAlpha: 0 },
         {
           scrollTrigger: {
             trigger: titleRef.current,
             start: 'top 80%',
           },
           y: 0,
-          opacity: 1,
+          autoAlpha: 1,
           duration: 0.8,
           ease: 'power3.out',
           immediateRender: false,
@@ -104,14 +104,14 @@ export default function Currently({
 
       gsap.fromTo(
         cardsRef.current?.querySelectorAll('.currently-card') || [],
-        { y: 48, opacity: 0 },
+        { y: 48, autoAlpha: 0 },
         {
           scrollTrigger: {
             trigger: cardsRef.current,
             start: 'top 75%',
           },
           y: 0,
-          opacity: 1,
+          autoAlpha: 1,
           duration: 0.7,
           stagger: 0.12,
           ease: 'power3.out',
@@ -185,7 +185,7 @@ export default function Currently({
   return (
     <section id="currently" ref={sectionRef} className="px-4 py-24 bg-background">
       <div className="container mx-auto max-w-6xl">
-        <div ref={titleRef} className="mb-12">
+        <div ref={titleRef} className="mb-12 gsap-hidden">
           <p className="mb-3 text-[11px] font-label font-bold uppercase tracking-[0.28em] text-primary">
             Right now
           </p>
@@ -199,7 +199,7 @@ export default function Currently({
 
         <div ref={cardsRef} className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {latestBlogPost ? (
-            <article className="currently-card overflow-hidden rounded-2xl border border-white/10 bg-surface-container shadow-[0_2px_10px_rgba(0,0,0,0.16)]">
+<article className="currently-card gsap-hidden overflow-hidden rounded-2xl border border-white/10 bg-surface-container shadow-[0_2px_10px_rgba(0,0,0,0.16)]">
               <div className="relative aspect-[4/3] bg-surface-container-high">
                 {latestBlogPost.mainImage ? (
                   <Image
@@ -256,7 +256,7 @@ export default function Currently({
               </div>
             </article>
           ) : (
-            <div className="currently-card flex min-h-[280px] flex-col rounded-2xl border border-white/10 bg-surface-container p-5 shadow-[0_2px_10px_rgba(0,0,0,0.16)]">
+            <div className="currently-card gsap-hidden flex min-h-[280px] flex-col rounded-2xl border border-white/10 bg-surface-container p-5 shadow-[0_2px_10px_rgba(0,0,0,0.16)]">
               <div className="mb-6 flex items-start justify-between gap-4">
                 <span className="text-[10px] font-label font-bold uppercase tracking-[0.24em] text-primary">
                   Latest writing
@@ -286,7 +286,7 @@ export default function Currently({
             </div>
           )}
 
-          <div className="currently-card h-full">
+          <div className="currently-card gsap-hidden h-full">
             <CircularMusicPlayer
               songName={musicData.songName}
               artistName={musicData.artistName}
@@ -299,7 +299,7 @@ export default function Currently({
 
           <FootballMatchCard />
 
-          <div className="currently-card flex min-h-[280px] flex-col rounded-2xl border border-white/10 bg-surface-container p-5 shadow-[0_2px_10px_rgba(0,0,0,0.16)]">
+          <div className="currently-card gsap-hidden flex min-h-[280px] flex-col rounded-2xl border border-white/10 bg-surface-container p-5 shadow-[0_2px_10px_rgba(0,0,0,0.16)]">
             <div className="mb-6 flex items-start justify-between gap-4">
               <span className="text-[10px] font-label font-bold uppercase tracking-[0.24em] text-tertiary">
                 Skill sprint
@@ -366,7 +366,7 @@ export default function Currently({
             </div>
           </div>
 
-          <article className="currently-card overflow-hidden rounded-2xl border border-white/10 bg-surface-container shadow-[0_2px_10px_rgba(0,0,0,0.16)]">
+          <article className="currently-card gsap-hidden overflow-hidden rounded-2xl border border-white/10 bg-surface-container shadow-[0_2px_10px_rgba(0,0,0,0.16)]">
             <div className="relative aspect-[4/3] bg-surface-container-high">
               {loadingMovie ? (
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -417,7 +417,7 @@ export default function Currently({
             </div>
           </article>
 
-          <div className="currently-card flex min-h-[280px] flex-col rounded-2xl border border-white/10 bg-surface-container p-5 shadow-[0_2px_10px_rgba(0,0,0,0.16)]">
+          <div className="currently-card gsap-hidden flex min-h-[280px] flex-col rounded-2xl border border-white/10 bg-surface-container p-5 shadow-[0_2px_10px_rgba(0,0,0,0.16)]">
             <div className="mb-6 flex items-start justify-between gap-4">
               <span className="text-[10px] font-label font-bold uppercase tracking-[0.24em] text-accent-blue">
                 Local time

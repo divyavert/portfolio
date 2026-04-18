@@ -296,7 +296,7 @@ function SkillCard({
   return (
     <div
       ref={cardRef}
-      className='skill-card group relative overflow-hidden rounded-xl cursor-default select-none'
+      className='skill-card gsap-hidden group relative overflow-hidden rounded-xl cursor-default select-none'
       style={{
         gridColumn: isWide ? 'span 2' : 'span 1',
         gridRow: isTall ? 'span 2' : 'span 1',
@@ -459,11 +459,11 @@ export default function Skills({ skills: sanitySkills }: SkillsProps) {
       // Header lines
       gsap.fromTo(
         headerRef.current?.querySelectorAll('.h-line') ?? [],
-        { y: 70, opacity: 0 },
+        { y: 70, autoAlpha: 0 },
         {
           scrollTrigger: { trigger: headerRef.current, start: 'top 88%' },
           y: 0,
-          opacity: 1,
+          autoAlpha: 1,
           duration: 1,
           stagger: 0.12,
           ease: 'power3.out',
@@ -474,11 +474,11 @@ export default function Skills({ skills: sanitySkills }: SkillsProps) {
       // Bento cards pop in
       gsap.fromTo(
         '.skill-card',
-        { scale: 0.85, opacity: 0, y: 20 },
+        { scale: 0.85, autoAlpha: 0, y: 20 },
         {
           scrollTrigger: { trigger: gridRef.current, start: 'top 80%' },
           scale: 1,
-          opacity: 1,
+          autoAlpha: 1,
           y: 0,
           duration: 0.55,
           stagger: { amount: 0.7, from: 'start' },
@@ -525,7 +525,7 @@ export default function Skills({ skills: sanitySkills }: SkillsProps) {
       <div className='container mx-auto max-w-6xl relative z-10'>
         {/* ── Header ── */}
         <div ref={headerRef} className='mb-14'>
-          <div className='h-line flex items-center gap-3 mb-5'>
+          <div className='h-line gsap-hidden flex items-center gap-3 mb-5'>
             <div
               className='h-px w-12'
               style={{ background: 'hsl(var(--primary))' }}
@@ -540,13 +540,13 @@ export default function Skills({ skills: sanitySkills }: SkillsProps) {
 
           <h2 className='font-display font-bold leading-[0.9] mb-4'>
             <span
-              className='h-line block text-[clamp(3.5rem,10vw,7rem)]'
+              className='h-line gsap-hidden block text-[clamp(3.5rem,10vw,7rem)]'
               style={{ color: 'hsl(var(--foreground))' }}
             >
               Technical
             </span>
             <span
-              className='h-line block text-[clamp(3.5rem,10vw,7rem)] italic'
+              className='h-line gsap-hidden block text-[clamp(3.5rem,10vw,7rem)] italic'
               style={{
                 WebkitTextStroke: '1.5px hsl(var(--primary))',
                 color: 'transparent',
@@ -557,7 +557,7 @@ export default function Skills({ skills: sanitySkills }: SkillsProps) {
           </h2>
 
           <p
-            className='h-line font-body text-sm max-w-sm leading-relaxed'
+            className='h-line gsap-hidden font-body text-sm max-w-sm leading-relaxed'
             style={{ color: 'hsl(var(--muted-foreground))' }}
           >
             The stack I reach for — languages, frameworks, tools, and concepts

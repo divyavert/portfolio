@@ -165,11 +165,11 @@ export default function Projects({ projects: sanityProjects }: ProjectsProps) {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         headerRef.current,
-        { y: 40, opacity: 0 },
+        { y: 40, autoAlpha: 0 },
         {
           scrollTrigger: { trigger: headerRef.current, start: 'top 82%' },
           y: 0,
-          opacity: 1,
+          autoAlpha: 1,
           duration: 0.8,
           ease: 'power3.out',
           immediateRender: false,
@@ -178,11 +178,11 @@ export default function Projects({ projects: sanityProjects }: ProjectsProps) {
 
       gsap.fromTo(
         gridRef.current?.querySelectorAll('.project-card') || [],
-        { y: 48, opacity: 0 },
+        { y: 48, autoAlpha: 0 },
         {
           scrollTrigger: { trigger: gridRef.current, start: 'top 78%' },
           y: 0,
-          opacity: 1,
+          autoAlpha: 1,
           duration: 0.7,
           stagger: 0.12,
           ease: 'power3.out',
@@ -197,7 +197,7 @@ export default function Projects({ projects: sanityProjects }: ProjectsProps) {
   return (
     <section id="projects" ref={sectionRef} className="px-4 py-24 bg-surface-container-low">
       <div className="container mx-auto max-w-6xl">
-        <div ref={headerRef} className="mb-12">
+        <div ref={headerRef} className="mb-12 gsap-hidden">
           <h2 className="text-6xl md:text-8xl font-display font-bold mb-2">
             Featured <span className="italic text-primary">Projects</span>
           </h2>
@@ -213,7 +213,7 @@ export default function Projects({ projects: sanityProjects }: ProjectsProps) {
             return (
               <article
                 key={project._id}
-                className="project-card overflow-hidden rounded-2xl border border-white/10 bg-surface-container shadow-[0_2px_10px_rgba(0,0,0,0.14)] transition-colors duration-200 hover:bg-surface-container-high"
+                className="project-card gsap-hidden overflow-hidden rounded-2xl border border-white/10 bg-surface-container shadow-[0_2px_10px_rgba(0,0,0,0.14)] transition-colors duration-200 hover:bg-surface-container-high"
               >
                 <div className="relative aspect-[4/3] bg-surface-container-high">
                   <Image

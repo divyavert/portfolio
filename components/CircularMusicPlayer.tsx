@@ -93,7 +93,7 @@ export function CircularMusicPlayer({
   };
 
   return (
-    <div className="currently-card relative flex h-full min-h-[280px] flex-col rounded-2xl border border-white/10 bg-surface-container p-5 shadow-[0_2px_10px_rgba(0,0,0,0.16)]">
+    <div className="currently-card gsap-hidden relative flex h-full min-h-[280px] flex-col rounded-2xl border border-white/10 bg-surface-container p-5 shadow-[0_2px_10px_rgba(0,0,0,0.16)]">
       <div className="mb-6 flex items-start justify-between gap-4">
         <span className="text-[10px] font-label font-bold uppercase tracking-[0.24em] text-primary">
           Listening to

@@ -65,55 +65,71 @@ export default function Experience({
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Title animation
-      gsap.from(titleRef.current, {
-        scrollTrigger: {
-          trigger: titleRef.current,
-          start: 'top 80%',
-        },
-        y: 50,
-        opacity: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-      });
+      gsap.fromTo(titleRef.current,
+        { y: 50, autoAlpha: 0 },
+        {
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: 'top 80%',
+          },
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.8,
+          ease: 'power3.out',
+          immediateRender: false,
+        }
+      );
 
       // Trail path animation - draw in
-      gsap.from('.trail-path', {
-        scrollTrigger: {
-          trigger: timelineRef.current,
-          start: 'top 75%',
-        },
-        strokeDashoffset: 1000,
-        opacity: 0,
-        duration: 1.5,
-        stagger: 0.3,
-        ease: 'power2.out',
-      });
+      gsap.fromTo('.trail-path',
+        { strokeDashoffset: 1000, autoAlpha: 0 },
+        {
+          scrollTrigger: {
+            trigger: timelineRef.current,
+            start: 'top 75%',
+          },
+          strokeDashoffset: 0,
+          autoAlpha: 1,
+          duration: 1.5,
+          stagger: 0.3,
+          ease: 'power2.out',
+          immediateRender: false,
+        }
+      );
 
       // Experience cards - staggered cascade
-      gsap.from('.experience-card', {
-        scrollTrigger: {
-          trigger: timelineRef.current,
-          start: 'top 75%',
-        },
-        y: 80,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.2,
-        ease: 'power3.out',
-      });
+      gsap.fromTo('.experience-card',
+        { y: 80, autoAlpha: 0 },
+        {
+          scrollTrigger: {
+            trigger: timelineRef.current,
+            start: 'top 75%',
+          },
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.8,
+          stagger: 0.2,
+          ease: 'power3.out',
+          immediateRender: false,
+        }
+      );
 
       // Year markers - fade and scale
-      gsap.from('.year-marker', {
-        scrollTrigger: {
-          trigger: timelineRef.current,
-          start: 'top 80%',
-        },
-        scale: 0.8,
-        opacity: 0,
-        duration: 0.6,
-        stagger: 0.15,
-        ease: 'back.out(1.2)',
-      });
+      gsap.fromTo('.year-marker',
+        { scale: 0.8, autoAlpha: 0 },
+        {
+          scrollTrigger: {
+            trigger: timelineRef.current,
+            start: 'top 80%',
+          },
+          scale: 1,
+          autoAlpha: 1,
+          duration: 0.6,
+          stagger: 0.15,
+          ease: 'back.out(1.2)',
+          immediateRender: false,
+        }
+      );
     }, sectionRef);
 
     return () => ctx.revert();
@@ -126,7 +142,7 @@ export default function Experience({
       className='min-h-screen px-4 py-20 bg-background relative overflow-hidden'
     >
       {/* Section Header */}
-      <div ref={titleRef} className='container mx-auto max-w-6xl mb-16'>
+      <div ref={titleRef} className='container mx-auto max-w-6xl mb-16 gsap-hidden'>
         <h2 className='text-6xl md:text-8xl font-display font-bold mb-2'>
           Work <span className='italic text-primary'>Experience</span>
         </h2>
@@ -216,7 +232,7 @@ export default function Experience({
                 <>
                   {/* Left side year */}
                   {yearSide === 'left' && (
-                    <div className='year-marker hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 -translate-x-24 xl:-translate-x-32'>
+                    <div className='year-marker gsap-hidden hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 -translate-x-24 xl:-translate-x-32'>
                       <span className='text-6xl xl:text-7xl font-display font-bold text-foreground/30 -rotate-90 origin-center inline-block whitespace-nowrap'>
                         {year}
                       </span>
@@ -225,7 +241,7 @@ export default function Experience({
 
                   {/* Right side year */}
                   {yearSide === 'right' && (
-                    <div className='year-marker hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 translate-x-24 xl:translate-x-32'>
+                    <div className='year-marker gsap-hidden hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 translate-x-24 xl:translate-x-32'>
                       <span className='text-6xl xl:text-7xl font-display font-bold text-foreground/30 rotate-90 origin-center inline-block whitespace-nowrap'>
                         {year}
                       </span>
@@ -233,7 +249,7 @@ export default function Experience({
                   )}
 
                   {/* Mobile year - horizontal at top */}
-                  <div className='lg:hidden mb-4'>
+                  <div className='lg:hidden mb-4 gsap-hidden year-marker'>
                     <span className='text-3xl font-display font-bold text-foreground/30'>
                       {year}
                     </span>
@@ -243,7 +259,7 @@ export default function Experience({
 
               {/* Experience Card */}
               <div
-                className='experience-card relative'
+                className='experience-card gsap-hidden relative'
                 style={{
                   width: '100%',
                   maxWidth: cardWidth,

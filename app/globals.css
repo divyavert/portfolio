@@ -101,3 +101,9 @@ html {
 .animate-spin-slow {
   animation: spin-slow 8s linear infinite;
 }
+
+/* GSAP animation initial states - prevents FOUC/flickering */
+.gsap-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
