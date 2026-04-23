@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { Skill } from '@/lib/sanity/types';
@@ -225,20 +226,14 @@ const categoryConfig: Record<
 // 'wide' = col-span-2, 'tall' = row-span-2, 'big' = col+row span 2, 'normal' = 1x1
 type CardSize = 'wide' | 'tall' | 'big' | 'normal';
 // Pattern designed for 6-column grid to avoid gaps
-const bentoPattern: CardSize[] = [
-  'normal',
-  'normal',
-  'wide',
-  'normal',
-  'normal',
-  'normal',
-  'normal',
-  'wide',
-  'normal',
-  'normal',
-  'normal',
-  'normal',
-];
+
+const featuredSkillSizes: Record<string, CardSize> = {
+  javascript: 'wide',
+  react: 'wide',
+  'react.js': 'wide',
+  express: 'wide',
+  'express.js': 'wide',
+};
 
 function SkillCard({
   skill,
@@ -249,7 +244,6 @@ function SkillCard({
   size: CardSize;
   index: number;
 }) {
-  const [imgError, setImgError] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const cat = categoryConfig[skill.category] ?? categoryConfig.other;
   const slug = getIconSlug(skill.name);
@@ -257,7 +251,7 @@ function SkillCard({
   // Only try to load icon if slug exists
   const coloredIconUrl = slug ? `https://cdn.simpleicons.org/${slug}` : '';
   const whiteIconUrl = slug ? `https://cdn.simpleicons.org/${slug}/ffffff` : '';
-  const [iconUrl, setIconUrl] = useState(coloredIconUrl);
+  const [loadedIconUrl, setLoadedIconUrl] = useState('');
 
   const isWide = size === 'wide' || size === 'big';
   const isTall = size === 'tall' || size === 'big';
@@ -280,18 +274,56 @@ function SkillCard({
     });
   }, [floatDelay, floatDuration]);
 
-  const handleImageError = () => {
-    // Try white version if colored fails
-    if (iconUrl === coloredIconUrl && whiteIconUrl) {
-      setIconUrl(whiteIconUrl);
-    } else {
-      // Both failed, show fallback
-      setImgError(true);
-    }
-  };
+  useEffect(() => {
+    let isCancelled = false;
 
-  // If no slug, skip icon loading entirely
-  const shouldShowIcon = !imgError && iconUrl;
+    if (!coloredIconUrl) {
+      setLoadedIconUrl('');
+      return;
+    }
+
+    setLoadedIconUrl('');
+
+    const tryLoadIcon = (src: string) =>
+      new Promise<string>((resolve, reject) => {
+        const img = new window.Image();
+        img.onload = () => resolve(src);
+        img.onerror = reject;
+        img.src = src;
+      });
+
+    const loadIcon = async () => {
+      try {
+        const nextIcon = await tryLoadIcon(coloredIconUrl);
+        if (!isCancelled) {
+          setLoadedIconUrl(nextIcon);
+        }
+      } catch {
+        if (!whiteIconUrl) {
+          return;
+        }
+
+        try {
+          const nextIcon = await tryLoadIcon(whiteIconUrl);
+          if (!isCancelled) {
+            setLoadedIconUrl(nextIcon);
+          }
+        } catch {
+          if (!isCancelled) {
+            setLoadedIconUrl('');
+          }
+        }
+      }
+    };
+
+    loadIcon();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [coloredIconUrl, whiteIconUrl]);
+
+  const shouldShowIcon = Boolean(loadedIconUrl);
 
   return (
     <div
@@ -370,16 +402,15 @@ function SkillCard({
           >
             {shouldShowIcon ? (
               <img
-                src={iconUrl}
+                src={loadedIconUrl}
                 alt={skill.name}
                 className={`${isTall ? 'w-9 h-9' : 'w-7 h-7'} transition-all duration-300 group-hover:scale-105`}
                 style={{
                   objectFit: 'contain',
-                  filter: iconUrl.includes('/ffffff')
+                  filter: loadedIconUrl.includes('/ffffff')
                     ? 'brightness(0) invert(1) drop-shadow(0 1px 4px rgba(255,255,255,0.1))'
                     : 'drop-shadow(0 1px 4px rgba(0,0,0,0.2))',
                 }}
-                onError={handleImageError}
               />
             ) : (
               <span
@@ -578,7 +609,7 @@ export default function Skills({ skills: sanitySkills }: SkillsProps) {
             <SkillCard
               key={skill._id}
               skill={skill}
-              size={bentoPattern[i % bentoPattern.length]}
+              size={featuredSkillSizes[skill.name.toLowerCase()] || 'normal'}
               index={i}
             />
           ))}
