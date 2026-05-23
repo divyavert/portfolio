@@ -40,8 +40,22 @@ const PROMPTS = {
   confirm: '> CONFIRM_TRANSMISSION? (yes/no):',
 };
 
+const DATA_STEPS: TerminalStep[] = ['name', 'email', 'subject', 'message'];
+
+function promptWithProgress(step: TerminalStep): string {
+  const base = PROMPTS[step as keyof typeof PROMPTS] ?? '';
+  const idx = DATA_STEPS.indexOf(step);
+  return idx !== -1 ? `${base} [${idx + 1}/${DATA_STEPS.length}]` : base;
+}
+
+const INITIAL_TERMINAL_HISTORY: TerminalLine[] = [
+  { type: 'info', content: '> INITIALIZING_MESSAGE_TERMINAL...', timestamp: new Date().toISOString() },
+  { type: 'success', content: '> SYSTEM_READY', timestamp: new Date().toISOString() },
+  { type: 'info', content: '> Please provide the following information:', timestamp: new Date().toISOString() },
+  { type: 'prompt', content: promptWithProgress('name'), timestamp: new Date().toISOString() },
+];
+
 export default function Contact({ personalInfo }: ContactProps) {
-  // Fallback data
   const email = personalInfo?.email || 'dpanchori94@gmail.com';
   const github = personalInfo?.social?.github || 'https://github.com/divyavert';
   const linkedin =
@@ -57,28 +71,7 @@ export default function Contact({ personalInfo }: ContactProps) {
   const [currentStep, setCurrentStep] = useState<TerminalStep>('name');
   const [currentInput, setCurrentInput] = useState('');
   const [cursorPosition, setCursorPosition] = useState(0);
-  const [terminalHistory, setTerminalHistory] = useState<TerminalLine[]>([
-    {
-      type: 'info',
-      content: '> INITIALIZING_MESSAGE_TERMINAL...',
-      timestamp: new Date().toISOString(),
-    },
-    {
-      type: 'success',
-      content: '> SYSTEM_READY',
-      timestamp: new Date().toISOString(),
-    },
-    {
-      type: 'info',
-      content: '> Please provide the following information:',
-      timestamp: new Date().toISOString(),
-    },
-    {
-      type: 'prompt',
-      content: PROMPTS.name,
-      timestamp: new Date().toISOString(),
-    },
-  ]);
+  const [terminalHistory, setTerminalHistory] = useState<TerminalLine[]>(INITIAL_TERMINAL_HISTORY);
 
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -87,9 +80,6 @@ export default function Contact({ personalInfo }: ContactProps) {
     message: '',
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Sync cursor position from the real (hidden) input element
   const syncCursor = () => {
     const el = inputRef.current;
     if (el && 'selectionStart' in el && el.selectionStart !== null) {
@@ -97,14 +87,12 @@ export default function Contact({ personalInfo }: ContactProps) {
     }
   };
 
-  // Auto-scroll to bottom of terminal
   useEffect(() => {
     if (terminalBodyRef.current) {
       terminalBodyRef.current.scrollTop = terminalBodyRef.current.scrollHeight;
     }
   }, [terminalHistory]);
 
-  // Auto-focus input
   useEffect(() => {
     if (inputRef.current && currentStep !== 'complete') {
       inputRef.current.focus();
@@ -113,7 +101,6 @@ export default function Contact({ personalInfo }: ContactProps) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Title glitch entrance
       gsap.fromTo(titleRef.current,
         { autoAlpha: 0, y: 50 },
         {
@@ -129,7 +116,6 @@ export default function Contact({ personalInfo }: ContactProps) {
         }
       );
 
-      // Terminal boot-up animation
       gsap.fromTo(terminalRef.current,
         { autoAlpha: 0, scale: 0.95 },
         {
@@ -145,7 +131,6 @@ export default function Contact({ personalInfo }: ContactProps) {
         }
       );
 
-      // Orbital social links
       const orbitals = orbitsRef.current?.querySelectorAll('.orbital') || [];
       gsap.fromTo(orbitals,
         { scale: 0, autoAlpha: 0 },
@@ -198,29 +183,15 @@ export default function Contact({ personalInfo }: ContactProps) {
     }
   };
 
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
-    addToHistory({ type: 'info', content: '> TRANSMITTING...' });
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      addToHistory({ type: 'success', content: '> TRANSMISSION_SUCCESSFUL' });
-      addToHistory({
-        type: 'info',
-        content: '> Message received. Response incoming within 24h.',
-      });
-
-      setCurrentStep('complete');
-    } catch {
-      addToHistory({ type: 'error', content: '> TRANSMISSION_FAILED' });
-      addToHistory({ type: 'info', content: `> Try direct email: ${email}` });
-    } finally {
-      setIsSubmitting(false);
-    }
+  const handleSubmit = () => {
+    const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(`[Portfolio] ${formData.subject}`)}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`)}`;
+    window.open(mailtoUrl, '_blank');
+    addToHistory({ type: 'success', content: '> EMAIL_CLIENT_OPENED' });
+    addToHistory({ type: 'info', content: '> Your message is ready to send in your email app.' });
+    setCurrentStep('complete');
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       processInput();
@@ -239,10 +210,8 @@ export default function Contact({ personalInfo }: ContactProps) {
   const processInput = () => {
     const input = currentInput.trim();
 
-    // Add user input to history
     addToHistory({ type: 'input', content: `  ${input}` });
 
-    // Handle confirmation step
     if (currentStep === 'confirm') {
       if (input.toLowerCase() === 'yes' || input.toLowerCase() === 'y') {
         handleSubmit();
@@ -253,28 +222,7 @@ export default function Contact({ personalInfo }: ContactProps) {
         setTimeout(() => {
           setCurrentStep('name');
           setFormData({ name: '', email: '', subject: '', message: '' });
-          setTerminalHistory([
-            {
-              type: 'info',
-              content: '> INITIALIZING_MESSAGE_TERMINAL...',
-              timestamp: new Date().toISOString(),
-            },
-            {
-              type: 'success',
-              content: '> SYSTEM_READY',
-              timestamp: new Date().toISOString(),
-            },
-            {
-              type: 'info',
-              content: '> Please provide the following information:',
-              timestamp: new Date().toISOString(),
-            },
-            {
-              type: 'prompt',
-              content: PROMPTS.name,
-              timestamp: new Date().toISOString(),
-            },
-          ]);
+          setTerminalHistory(INITIAL_TERMINAL_HISTORY);
         }, 1000);
       }
       setCurrentInput('');
@@ -282,64 +230,34 @@ export default function Contact({ personalInfo }: ContactProps) {
       return;
     }
 
-    // Validate current step
     const error = validateInput(currentStep, input);
     if (error) {
       addToHistory({ type: 'error', content: error });
-      const prompt = PROMPTS[currentStep as keyof typeof PROMPTS];
-      if (prompt) {
-        addToHistory({ type: 'prompt', content: prompt });
-      }
+      addToHistory({ type: 'prompt', content: promptWithProgress(currentStep) });
       setCurrentInput('');
       setCursorPosition(0);
       return;
     }
 
-    // Save to form data
-    setFormData((prev) => ({ ...prev, [currentStep]: input }));
+    const updatedFormData = { ...formData, [currentStep]: input };
+    setFormData(updatedFormData);
 
-    // Move to next step
-    const stepOrder: TerminalStep[] = [
-      'name',
-      'email',
-      'subject',
-      'message',
-      'confirm',
-    ];
+    const stepOrder: TerminalStep[] = ['name', 'email', 'subject', 'message', 'confirm'];
     const currentIndex = stepOrder.indexOf(currentStep);
     const nextStep = stepOrder[currentIndex + 1];
 
     if (nextStep === 'confirm') {
-      // Show summary before confirmation
       addToHistory({ type: 'info', content: '> SUMMARY:' });
-      addToHistory({
-        type: 'info',
-        content: `  Name: ${formData.name || (currentStep === 'name' ? input : '')}`,
-      });
-      addToHistory({
-        type: 'info',
-        content: `  Email: ${formData.email || (currentStep === 'email' ? input : '')}`,
-      });
-      addToHistory({
-        type: 'info',
-        content: `  Subject: ${formData.subject || (currentStep === 'subject' ? input : '')}`,
-      });
-      addToHistory({
-        type: 'info',
-        content: `  Message: ${formData.message || (currentStep === 'message' ? input : '')}`,
-      });
-      const confirmPrompt = PROMPTS[nextStep as keyof typeof PROMPTS];
-      if (confirmPrompt) {
-        addToHistory({ type: 'prompt', content: confirmPrompt });
-      }
+      addToHistory({ type: 'info', content: `  Name: ${updatedFormData.name}` });
+      addToHistory({ type: 'info', content: `  Email: ${updatedFormData.email}` });
+      addToHistory({ type: 'info', content: `  Subject: ${updatedFormData.subject}` });
+      addToHistory({ type: 'info', content: `  Message: ${updatedFormData.message}` });
+      addToHistory({ type: 'prompt', content: promptWithProgress('confirm') });
     } else if (nextStep) {
-      const nextPrompt = PROMPTS[nextStep as keyof typeof PROMPTS];
-      if (nextPrompt) {
-        addToHistory({ type: 'prompt', content: nextPrompt });
-      }
+      addToHistory({ type: 'prompt', content: promptWithProgress(nextStep) });
     }
 
-    setCurrentStep(nextStep);
+    if (nextStep) setCurrentStep(nextStep);
     setCurrentInput('');
     setCursorPosition(0);
   };
@@ -347,28 +265,7 @@ export default function Contact({ personalInfo }: ContactProps) {
   const resetTerminal = () => {
     setCurrentStep('name');
     setFormData({ name: '', email: '', subject: '', message: '' });
-    setTerminalHistory([
-      {
-        type: 'info',
-        content: '> INITIALIZING_MESSAGE_TERMINAL...',
-        timestamp: new Date().toISOString(),
-      },
-      {
-        type: 'success',
-        content: '> SYSTEM_READY',
-        timestamp: new Date().toISOString(),
-      },
-      {
-        type: 'info',
-        content: '> Please provide the following information:',
-        timestamp: new Date().toISOString(),
-      },
-      {
-        type: 'prompt',
-        content: PROMPTS.name,
-        timestamp: new Date().toISOString(),
-      },
-    ]);
+    setTerminalHistory(INITIAL_TERMINAL_HISTORY);
   };
 
   return (
@@ -428,7 +325,6 @@ export default function Contact({ personalInfo }: ContactProps) {
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-8 items-start'>
           {/* Orbital Social Links - Left Column */}
           <div ref={orbitsRef} className='lg:col-span-1 space-y-6'>
-            {/* Floating Social Orbitals */}
             <div className='space-y-4'>
               {/* Email Orbital */}
               <a
@@ -436,7 +332,6 @@ export default function Contact({ personalInfo }: ContactProps) {
                 className='orbital gsap-hidden block group relative'
               >
                 <div className='relative bg-surface-container hover:bg-surface-container-high rounded-2xl p-5 transition-all duration-300 hover:scale-[1.02] border border-primary/10 hover:border-primary/20'>
-                  {/* Holographic shine */}
                   <div
                     className='absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300'
                     style={{
@@ -444,14 +339,9 @@ export default function Contact({ personalInfo }: ContactProps) {
                         'linear-gradient(135deg, transparent 0%, rgba(255,144,105,0.05) 50%, transparent 100%)',
                     }}
                   />
-
                   <div className='relative flex items-center gap-4'>
                     <div className='flex-shrink-0 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors'>
-                      <svg
-                        className='w-6 h-6 text-primary'
-                        fill='currentColor'
-                        viewBox='0 0 20 20'
-                      >
+                      <svg className='w-6 h-6 text-primary' fill='currentColor' viewBox='0 0 20 20'>
                         <path d='M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z' />
                         <path d='M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z' />
                       </svg>
@@ -483,14 +373,9 @@ export default function Contact({ personalInfo }: ContactProps) {
                         'linear-gradient(135deg, transparent 0%, rgba(0,227,253,0.05) 50%, transparent 100%)',
                     }}
                   />
-
                   <div className='relative flex items-center gap-4'>
                     <div className='flex-shrink-0 w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center group-hover:bg-secondary/20 transition-colors'>
-                      <svg
-                        className='w-6 h-6 text-secondary'
-                        fill='currentColor'
-                        viewBox='0 0 24 24'
-                      >
+                      <svg className='w-6 h-6 text-secondary' fill='currentColor' viewBox='0 0 24 24'>
                         <path d='M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z' />
                       </svg>
                     </div>
@@ -521,14 +406,9 @@ export default function Contact({ personalInfo }: ContactProps) {
                         'linear-gradient(135deg, transparent 0%, rgba(165,140,255,0.05) 50%, transparent 100%)',
                     }}
                   />
-
                   <div className='relative flex items-center gap-4'>
                     <div className='flex-shrink-0 w-12 h-12 rounded-xl bg-tertiary/10 flex items-center justify-center group-hover:bg-tertiary/20 transition-colors'>
-                      <svg
-                        className='w-6 h-6 text-tertiary'
-                        fill='currentColor'
-                        viewBox='0 0 24 24'
-                      >
+                      <svg className='w-6 h-6 text-tertiary' fill='currentColor' viewBox='0 0 24 24'>
                         <path d='M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z' />
                       </svg>
                     </div>
@@ -555,21 +435,15 @@ export default function Contact({ personalInfo }: ContactProps) {
               </div>
               <div className='space-y-2 text-xs font-mono'>
                 <div className='flex justify-between'>
-                  <span className='text-muted-foreground'>
-                    {'>'} RESPONSE_TIME:
-                  </span>
+                  <span className='text-muted-foreground'>{'>'} RESPONSE_TIME:</span>
                   <span className='text-white'>{'< 24H'}</span>
                 </div>
                 <div className='flex justify-between'>
-                  <span className='text-muted-foreground'>
-                    {'>'} AVAILABILITY:
-                  </span>
+                  <span className='text-muted-foreground'>{'>'} AVAILABILITY:</span>
                   <span className='text-accent-green'>ONLINE</span>
                 </div>
                 <div className='flex justify-between'>
-                  <span className='text-muted-foreground'>
-                    {'>'} REPLY_RATE:
-                  </span>
+                  <span className='text-muted-foreground'>{'>'} REPLY_RATE:</span>
                   <span className='text-white'>100%</span>
                 </div>
               </div>
@@ -602,7 +476,8 @@ export default function Contact({ personalInfo }: ContactProps) {
               {/* Terminal Body - Scrollable History */}
               <div
                 ref={terminalBodyRef}
-                className='p-8 space-y-2 font-mono text-sm h-[500px] overflow-y-auto custom-scrollbar'
+                onClick={() => inputRef.current?.focus()}
+                className='p-8 space-y-2 font-mono text-sm h-[500px] overflow-y-auto custom-scrollbar cursor-text'
               >
                 {terminalHistory.map((line, index) => (
                   <div
@@ -624,7 +499,7 @@ export default function Contact({ personalInfo }: ContactProps) {
                 ))}
 
                 {/* Active Input Area */}
-                {currentStep !== 'complete' && !isSubmitting && (
+                {currentStep !== 'complete' && (
                   <div className='flex items-start gap-2'>
                     <span className='text-accent-green flex-shrink-0'>
                       {'>'}
@@ -632,7 +507,6 @@ export default function Contact({ personalInfo }: ContactProps) {
                     <div className='flex-1 relative'>
                       {currentStep === 'message' ? (
                         <div className='relative'>
-                          {/* Visual display with cursor for textarea */}
                           <div className='w-full font-mono text-white whitespace-pre-wrap break-words min-h-[4.5rem] pointer-events-none'>
                             <span>{currentInput.slice(0, cursorPosition)}</span>
                             <span className='inline-block w-2 h-5 bg-primary animate-pulse align-middle' />
@@ -642,18 +516,17 @@ export default function Contact({ personalInfo }: ContactProps) {
                             ref={inputRef as React.RefObject<HTMLTextAreaElement>}
                             value={currentInput}
                             onChange={handleInputChange}
-                            onKeyPress={handleKeyPress}
+                            onKeyDown={handleKeyDown}
                             onKeyUp={handleKeyUp}
                             onSelect={syncCursor}
                             onClick={syncCursor}
+                            aria-label='Enter your message'
                             className='absolute inset-0 w-full h-full bg-transparent border-none outline-none text-transparent resize-none font-mono caret-transparent'
                             rows={3}
-                            disabled={isSubmitting}
                           />
                         </div>
                       ) : (
                         <div className='relative flex items-center w-full min-h-[1.25rem]'>
-                          {/* Visual display with cursor split at position */}
                           {currentInput.slice(0, cursorPosition) && (
                             <span className='font-mono text-white whitespace-pre'>{currentInput.slice(0, cursorPosition)}</span>
                           )}
@@ -666,16 +539,27 @@ export default function Contact({ personalInfo }: ContactProps) {
                             type={currentStep === 'email' ? 'email' : 'text'}
                             value={currentInput}
                             onChange={handleInputChange}
-                            onKeyPress={handleKeyPress}
+                            onKeyDown={handleKeyDown}
                             onKeyUp={handleKeyUp}
                             onSelect={syncCursor}
                             onClick={syncCursor}
+                            aria-label={`Enter your ${currentStep}`}
                             className='absolute inset-0 w-full bg-transparent border-none outline-none text-transparent font-mono caret-transparent'
-                            disabled={isSubmitting}
                           />
                         </div>
                       )}
                     </div>
+                  </div>
+                )}
+
+                {/* Contextual hint */}
+                {currentStep !== 'complete' && (
+                  <div className='text-muted-foreground/50 text-xs font-mono mt-3 pl-4'>
+                    {currentStep === 'message'
+                      ? '> Shift+Enter for new line · Enter to confirm'
+                      : currentStep === 'confirm'
+                        ? '> Type "yes" to send · "no" to restart'
+                        : '> Press Enter to continue'}
                   </div>
                 )}
               </div>
@@ -686,12 +570,8 @@ export default function Contact({ personalInfo }: ContactProps) {
 
       <style jsx>{`
         @keyframes scanlines {
-          0% {
-            transform: translateY(0);
-          }
-          100% {
-            transform: translateY(100%);
-          }
+          0% { transform: translateY(0); }
+          100% { transform: translateY(100%); }
         }
 
         .custom-scrollbar::-webkit-scrollbar {
