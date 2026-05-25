@@ -190,7 +190,7 @@ export default function Currently({
           <p className="mb-3 text-[11px] font-label font-bold uppercase tracking-[0.28em] text-primary">
             Right now
           </p>
-          <h2 className="text-4xl font-display font-bold leading-none md:text-6xl">
+          <h2 className="text-3xl font-display font-bold leading-none sm:text-4xl md:text-6xl">
             Currently <span className="italic text-primary">Vibing</span>
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground md:text-base">

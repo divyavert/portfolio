@@ -109,7 +109,7 @@ export function Hero({ personalInfo }: HeroProps) {
     <section
       id='home'
       ref={heroRef}
-      className='relative min-h-screen flex items-center justify-center px-4 pt-20 overflow-hidden'
+      className='relative min-h-screen flex items-center justify-center px-4 pt-16 md:pt-20 overflow-hidden'
     >
       {/* Background decorative elements */}
       <div className='absolute inset-0 -z-10'>
@@ -140,7 +140,7 @@ export function Hero({ personalInfo }: HeroProps) {
 
               <div className='relative z-10'>
                 {/* Profile Image */}
-                <div className='w-48 h-48 mx-auto mb-6 rounded-xl bg-gradient-to-br from-primary/20 to-accent-purple/20 flex items-center justify-center text-6xl relative overflow-hidden'>
+                <div className='w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 mx-auto mb-6 rounded-xl bg-gradient-to-br from-primary/20 to-accent-purple/20 flex items-center justify-center text-6xl relative overflow-hidden'>
                   {/* Shimmer effect */}
                   <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-shimmer'></div>
                   {profileImage ? (
@@ -225,7 +225,7 @@ export function Hero({ personalInfo }: HeroProps) {
           <div>
             <h1
               ref={titleRef}
-              className='text-5xl md:text-7xl lg:text-8xl font-display font-bold mb-6 leading-tight'
+              className='text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-bold mb-6 leading-tight'
             >
               <span className='block title-word overflow-hidden'>
                 <span className='inline-block text-foreground'>SOFTWARE</span>
@@ -254,7 +254,7 @@ export function Hero({ personalInfo }: HeroProps) {
               className='grid grid-cols-3 gap-3 md:gap-4 mb-8'
             >
               <div className='stat-card bg-surface-container backdrop-blur-sm rounded-xl p-4 md:p-6 text-center hover:bg-surface-container-high transition-colors group'>
-                <div className='text-3xl md:text-4xl font-display font-bold bg-gradient-to-br from-primary to-accent-purple bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform'>
+                <div className='text-2xl sm:text-3xl md:text-4xl font-display font-bold bg-gradient-to-br from-primary to-accent-purple bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform'>
                   {stats.yearsExperience}+
                 </div>
                 <div className='text-xs md:text-sm text-muted-foreground font-label leading-tight uppercase tracking-wider'>
@@ -264,7 +264,7 @@ export function Hero({ personalInfo }: HeroProps) {
                 </div>
               </div>
               <div className='stat-card bg-surface-container backdrop-blur-sm rounded-xl p-4 md:p-6 text-center hover:bg-surface-container-high transition-colors group'>
-                <div className='text-3xl md:text-4xl font-display font-bold bg-gradient-to-br from-primary to-accent-purple bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform'>
+                <div className='text-2xl sm:text-3xl md:text-4xl font-display font-bold bg-gradient-to-br from-primary to-accent-purple bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform'>
                   {stats.projectsCompleted}+
                 </div>
                 <div className='text-xs md:text-sm text-muted-foreground font-label leading-tight uppercase tracking-wider'>
@@ -274,7 +274,7 @@ export function Hero({ personalInfo }: HeroProps) {
                 </div>
               </div>
               <div className='stat-card bg-surface-container backdrop-blur-sm rounded-xl p-4 md:p-6 text-center hover:bg-surface-container-high transition-colors group'>
-                <div className='text-3xl md:text-4xl font-display font-bold bg-gradient-to-br from-primary to-accent-purple bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform'>
+                <div className='text-2xl sm:text-3xl md:text-4xl font-display font-bold bg-gradient-to-br from-primary to-accent-purple bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform'>
                   {stats.coffeesCoded || 37}+
                 </div>
                 <div className='text-xs md:text-sm text-muted-foreground font-label leading-tight uppercase tracking-wider'>

@@ -28,7 +28,7 @@ export function BlogCard({ post, index = 0, priority = false }: BlogCardProps) {
   const primaryCategory = post.categories?.[0] || 'Essay';
 
   return (
-    <article className="blog-card group gsap-hidden overflow-hidden rounded-[28px] border border-white/10 bg-surface-container shadow-[0_10px_40px_rgba(0,0,0,0.18)] transition-transform duration-300 hover:-translate-y-1 hover:bg-surface-container-high">
+    <article className="blog-card group gsap-hidden overflow-hidden rounded-none border-y border-x-0 sm:rounded-[28px] sm:border border-white/10 bg-surface-container shadow-[0_10px_40px_rgba(0,0,0,0.18)] transition-transform duration-300 hover:-translate-y-1 hover:bg-surface-container-high">
       <Link href={`/blog/${post.slug.current}`} className="flex h-full flex-col">
         <div className="relative aspect-[1.15/1] overflow-hidden bg-surface-container-high">
           {heroImage ? (

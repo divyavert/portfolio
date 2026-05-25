@@ -198,7 +198,7 @@ export default function Projects({ projects: sanityProjects }: ProjectsProps) {
     <section id="projects" ref={sectionRef} className="px-4 py-24 bg-surface-container-low">
       <div className="container mx-auto max-w-6xl">
         <div ref={headerRef} className="mb-12 gsap-hidden">
-          <h2 className="text-6xl md:text-8xl font-display font-bold mb-2">
+          <h2 className="text-4xl sm:text-6xl md:text-8xl font-display font-bold mb-2">
             Featured <span className="italic text-primary">Projects</span>
           </h2>
           <p className="text-primary text-xs tracking-widest font-label font-bold uppercase">

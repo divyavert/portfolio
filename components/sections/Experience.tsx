@@ -143,7 +143,7 @@ export default function Experience({
     >
       {/* Section Header */}
       <div ref={titleRef} className='container mx-auto max-w-6xl mb-16 gsap-hidden'>
-        <h2 className='text-6xl md:text-8xl font-display font-bold mb-2'>
+        <h2 className='text-4xl sm:text-6xl md:text-8xl font-display font-bold mb-2'>
           Work <span className='italic text-primary'>Experience</span>
         </h2>
         <p className='text-primary text-xs tracking-widest font-label font-bold uppercase'>

@@ -599,11 +599,7 @@ export default function Skills({ skills: sanitySkills }: SkillsProps) {
         {/* ── Bento Grid ── */}
         <div
           ref={gridRef}
-          className='grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2'
-          style={{
-            gridAutoRows: '130px',
-            gridAutoFlow: 'dense',
-          }}
+          className='grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 [grid-auto-rows:90px] sm:[grid-auto-rows:110px] md:[grid-auto-rows:130px] [grid-auto-flow:dense]'
         >
           {normalizedSkills.map((skill, i) => (
             <SkillCard

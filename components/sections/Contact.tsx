@@ -302,7 +302,7 @@ export default function Contact({ personalInfo }: ContactProps) {
               {'>'} INITIALIZING_CONNECTION...
             </span>
           </div>
-          <h2 className='text-6xl md:text-8xl font-display font-bold mb-4 relative'>
+          <h2 className='text-4xl sm:text-6xl md:text-8xl font-display font-bold mb-4 relative'>
             <span className='relative inline-block'>
               Let&apos;s{' '}
               <span className='italic text-primary relative'>
@@ -477,7 +477,7 @@ export default function Contact({ personalInfo }: ContactProps) {
               <div
                 ref={terminalBodyRef}
                 onClick={() => inputRef.current?.focus()}
-                className='p-8 space-y-2 font-mono text-sm h-[500px] overflow-y-auto custom-scrollbar cursor-text'
+                className='p-4 sm:p-8 space-y-2 font-mono text-sm h-[320px] sm:h-[400px] md:h-[500px] overflow-y-auto custom-scrollbar cursor-text'
               >
                 {terminalHistory.map((line, index) => (
                   <div

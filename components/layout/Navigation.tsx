@@ -50,46 +50,86 @@ export function Navigation() {
   }
 
   return (
-    <nav className="fixed top-8 left-1/2 -translate-x-1/2 z-50">
-      <div className="flex items-center gap-2 bg-surface-glass/60 backdrop-blur-glass border border-border rounded-full px-6 py-3 shadow-lg">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = item.id === 'blog' ? isBlogRoute : activeSection === item.id && pathname === '/';
-          const isPageLink = item.href.startsWith('/');
+    <>
+      {/* Desktop: floating pill nav at top */}
+      <nav className="hidden md:block fixed top-8 left-1/2 -translate-x-1/2 z-50">
+        <div className="flex items-center gap-2 bg-surface-glass/60 backdrop-blur-glass border border-border rounded-full px-6 py-3 shadow-lg">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = item.id === 'blog' ? isBlogRoute : activeSection === item.id && pathname === '/';
+            const isPageLink = item.href.startsWith('/');
 
-          const classes = cn(
-            "relative flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300",
-            "hover:bg-primary/10",
-            isActive && "bg-primary text-primary-foreground"
-          );
-
-          if (isPageLink) {
-            return (
-              <Link key={item.id} href={item.href} className={classes} title={item.label}>
-                <Icon className="w-5 h-5" />
-                <span className="hidden md:inline text-sm font-medium">{item.label}</span>
-              </Link>
+            const classes = cn(
+              "relative flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300",
+              "hover:bg-primary/10",
+              isActive && "bg-primary text-primary-foreground"
             );
-          }
 
-          return (
-            <button
-              key={item.id}
-              onClick={() => {
-                scrollToSection(item.href);
-                setActiveSection(item.id);
-              }}
-              className={classes}
-              title={item.label}
-            >
-              <Icon className="w-5 h-5" />
-              <span className="hidden md:inline text-sm font-medium">
-                {item.label}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-    </nav>
+            if (isPageLink) {
+              return (
+                <Link key={item.id} href={item.href} className={classes} title={item.label}>
+                  <Icon className="w-5 h-5" />
+                  <span className="text-sm font-medium">{item.label}</span>
+                </Link>
+              );
+            }
+
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  scrollToSection(item.href);
+                  setActiveSection(item.id);
+                }}
+                className={classes}
+                title={item.label}
+              >
+                <Icon className="w-5 h-5" />
+                <span className="text-sm font-medium">{item.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </nav>
+
+      {/* Mobile: floating pill nav at bottom (mirrors desktop style) */}
+      <nav className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+        <div className="flex items-center gap-1 bg-surface-glass/60 backdrop-blur-glass border border-border rounded-full px-4 py-2.5 shadow-lg">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = item.id === 'blog' ? isBlogRoute : activeSection === item.id && pathname === '/';
+            const isPageLink = item.href.startsWith('/');
+
+            const classes = cn(
+              "relative flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300",
+              "hover:bg-primary/10",
+              isActive && "bg-primary text-primary-foreground"
+            );
+
+            if (isPageLink) {
+              return (
+                <Link key={item.id} href={item.href} className={classes} title={item.label}>
+                  <Icon className="w-5 h-5" />
+                </Link>
+              );
+            }
+
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  scrollToSection(item.href);
+                  setActiveSection(item.id);
+                }}
+                className={classes}
+                title={item.label}
+              >
+                <Icon className="w-5 h-5" />
+              </button>
+            );
+          })}
+        </div>
+      </nav>
+    </>
   );
 }

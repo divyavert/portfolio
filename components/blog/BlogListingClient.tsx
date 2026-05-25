@@ -112,7 +112,7 @@ export function BlogListingClient({ posts }: BlogListingClientProps) {
   }, [filteredPosts.length, posts]);
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden px-4 pb-24 pt-32">
+    <section ref={sectionRef} className="relative overflow-hidden px-0 sm:px-4 pb-24 pt-32">
       {/* Radial colour wash */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,144,105,0.16),_transparent_28%),radial-gradient(circle_at_70%_10%,_rgba(0,227,253,0.14),_transparent_24%)]" />
       {/* Dot-grid texture fading downward */}
@@ -122,12 +122,12 @@ export function BlogListingClient({ posts }: BlogListingClientProps) {
         {/* Hero card */}
         <div
           ref={heroRef}
-          className="gsap-hidden relative mb-14 overflow-hidden rounded-[36px] border border-white/10 bg-surface-container-low/70 shadow-[0_20px_60px_rgba(0,0,0,0.22)] backdrop-blur-glass"
+          className="gsap-hidden relative mb-14 overflow-hidden rounded-none sm:rounded-[36px] border-y sm:border border-white/10 bg-surface-container-low/70 shadow-[0_20px_60px_rgba(0,0,0,0.22)] backdrop-blur-glass"
         >
           {/* Top-edge inner glow */}
           <div className="pointer-events-none absolute left-1/2 top-0 h-px w-4/5 -translate-x-1/2 bg-gradient-to-r from-transparent via-white/18 to-transparent" />
 
-          <div className="p-8 md:p-10">
+          <div className="p-5 sm:p-8 md:p-10">
             {/* Eyebrow + title */}
             <div className="max-w-3xl space-y-5">
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3.5 py-1.5">
@@ -137,7 +137,7 @@ export function BlogListingClient({ posts }: BlogListingClientProps) {
                 </span>
               </div>
 
-              <h1 className="font-display text-5xl font-bold leading-none md:text-7xl">
+              <h1 className="font-display text-3xl font-bold leading-none sm:text-5xl md:text-7xl">
                 Essays on{' '}
                 <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text italic text-transparent">
                   building

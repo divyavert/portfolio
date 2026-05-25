@@ -33,7 +33,7 @@ export default async function BlogPage() {
   return (
     <>
       <Navigation />
-      <main className="min-h-screen bg-background">
+      <main className="min-h-screen bg-background pb-20 md:pb-0">
         <BlogListingClient posts={posts} />
       </main>
       <Footer />

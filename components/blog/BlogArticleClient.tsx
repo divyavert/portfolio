@@ -60,10 +60,10 @@ export function BlogArticleClient({ post, headings, shareUrl }: BlogArticleClien
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden px-4 pb-24 pt-28">
+    <section ref={sectionRef} className="relative overflow-hidden px-0 sm:px-4 pb-24 pt-28">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,144,105,0.14),_transparent_30%),radial-gradient(circle_at_80%_10%,_rgba(165,140,255,0.14),_transparent_26%)]" />
       <div className="container relative mx-auto max-w-6xl">
-        <div ref={heroRef} className="gsap-hidden mb-12 rounded-[36px] border border-white/10 bg-surface-container-low/75 p-8 shadow-[0_20px_60px_rgba(0,0,0,0.22)] backdrop-blur-glass md:p-10">
+        <div ref={heroRef} className="gsap-hidden mb-12 rounded-none border-y sm:rounded-[36px] sm:border border-white/10 bg-surface-container-low/75 p-5 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.22)] backdrop-blur-glass md:p-10">
           <Link
             href="/blog"
             className="inline-flex items-center rounded-full border border-white/10 bg-surface-container-high px-4 py-2 text-[11px] font-label font-bold uppercase tracking-[0.24em] text-muted-foreground transition-colors hover:text-foreground"
@@ -84,7 +84,7 @@ export function BlogArticleClient({ post, headings, shareUrl }: BlogArticleClien
           </div>
 
           <div className="mt-5 max-w-4xl space-y-5">
-            <h1 className="font-display text-4xl font-bold leading-tight text-foreground md:text-6xl">
+            <h1 className="font-display text-2xl font-bold leading-tight text-foreground sm:text-4xl md:text-6xl">
               {post.title}
             </h1>
             {post.excerpt ? (
@@ -113,7 +113,7 @@ export function BlogArticleClient({ post, headings, shareUrl }: BlogArticleClien
             <TableOfContents headings={headings} />
           </div>
 
-          <article ref={articleRef} className="gsap-hidden rounded-[36px] border border-white/10 bg-surface-container p-6 shadow-[0_12px_40px_rgba(0,0,0,0.16)] md:p-8 lg:p-10 xl:p-12">
+          <article ref={articleRef} className="gsap-hidden rounded-none border-y sm:rounded-[36px] sm:border border-white/10 bg-surface-container p-5 shadow-[0_12px_40px_rgba(0,0,0,0.16)] sm:p-6 md:p-8 lg:p-10 xl:p-12">
             <BlogContent value={post.body} />
           </article>
         </div>
